@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My First Website</title>
+    <title>My Animated Website</title>
 
     <style>
         body {
@@ -11,7 +11,15 @@
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(-45deg, #667eea, #764ba2, #6a11cb, #2575fc);
+            background-size: 400% 400%;
+            animation: gradientMove 10s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
         }
 
         .card {
@@ -19,21 +27,39 @@
             padding: 40px;
             border-radius: 20px;
             text-align: center;
-            width: 350px;
+            width: 380px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: fadeIn 1.5s ease-in-out;
+            animation: slideUp 1.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {opacity: 0; transform: translateY(50px);}
+            to {opacity: 1; transform: translateY(0);}
         }
 
         h1 {
             color: #333;
+            margin-bottom: 10px;
         }
 
-        p {
-            color: #666;
+        .typing {
+            overflow: hidden;
+            border-right: 3px solid #667eea;
+            white-space: nowrap;
+            animation: typing 3s steps(30), blink 0.7s infinite;
+        }
+
+        @keyframes typing {
+            from {width: 0}
+            to {width: 100%}
+        }
+
+        @keyframes blink {
+            50% {border-color: transparent}
         }
 
         button {
-            margin-top: 20px;
+            margin-top: 25px;
             padding: 10px 25px;
             border: none;
             background: #667eea;
@@ -48,19 +74,14 @@
             background: #764ba2;
             transform: scale(1.1);
         }
-
-        @keyframes fadeIn {
-            from {opacity: 0; transform: translateY(20px);}
-            to {opacity: 1; transform: translateY(0);}
-        }
     </style>
 </head>
 
 <body>
     <div class="card">
         <h1>مرحبا 👋</h1>
-        <p>أنا أتعلم البرمجة وأطور مهاراتي كل يوم 🚀</p>
-        <button onclick="alert('أحسنت! 👏 استمر بالتعلم')">اضغط هنا</button>
+        <p class="typing">أنا أتعلم البرمجة وأصبح مطور محترف 🚀</p>
+        <button onclick="alert('استمر! أنت تتقدم بسرعة 🔥')">اضغط هنا</button>
     </div>
 </body>
 </html>
