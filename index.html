@@ -5,41 +5,62 @@
 
     <style>
         body {
-            background-color: #1e1e2f;
-            color: white;
-            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-family: Arial, sans-serif;
-            margin-top: 100px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 350px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         h1 {
-            color: #00ffcc;
-            font-size: 50px;
+            color: #333;
         }
 
         p {
-            font-size: 20px;
-            color: #dddddd;
+            color: #666;
         }
 
         button {
-            background-color: #00ffcc;
+            margin-top: 20px;
+            padding: 10px 25px;
             border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            border-radius: 25px;
             cursor: pointer;
+            transition: 0.3s;
         }
 
         button:hover {
-            background-color: #00ccaa;
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
         }
     </style>
 </head>
 
 <body>
-    <h1>مرحبا 👋</h1>
-    <p>أنا أتعلم البرمجة وأبني موقعي الأول</p>
-    <button>اضغط هنا</button>
+    <div class="card">
+        <h1>مرحبا 👋</h1>
+        <p>أنا أتعلم البرمجة وأطور مهاراتي كل يوم 🚀</p>
+        <button onclick="alert('أحسنت! 👏 استمر بالتعلم')">اضغط هنا</button>
+    </div>
 </body>
 </html>
