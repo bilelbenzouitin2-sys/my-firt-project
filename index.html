@@ -211,10 +211,17 @@
 <div class="actions">
   <div style="background:#f4f6ff;padding:10px;border-radius:10px;margin-bottom:10px;">
     <strong>الدفع عبر USDT (TRC20 فقط)</strong><br>
-    <small style="word-break:break-all;">
-      TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ
-    </small>
+
+    <input type="text"
+      value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
+      id="usdtSpotify"
+      readonly
+      style="width:100%;padding:6px;margin-top:6px;border-radius:6px;border:1px solid #ccc;font-size:12px;">
   </div>
+
+  <button class="btn buy" onclick="copySpotify()">
+    نسخ العنوان
+  </button>
 
   <a class="btn chat" href="https://t.me/Bilelbz" target="_blank">
     أرسل إثبات الدفع
@@ -343,7 +350,15 @@
     showToast(`🛒 تم شراء ${item} قبل ${mins} دقائق`);
   }, 22000); // كل 22 ثانية
 </script>
-
+  <script>
+function copySpotify(){
+  const copyText = document.getElementById("usdtSpotify");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  alert("تم نسخ عنوان USDT");
+}
+</script>
 
 </body>
 </html>
