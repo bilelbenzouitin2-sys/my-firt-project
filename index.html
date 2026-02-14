@@ -123,6 +123,11 @@
       padding:18px;
       opacity:.9;
     }
+    .copy-success{
+  background: #28a745 !important;
+  color: white !important;
+}
+
   </style>
 </head>
 
@@ -405,13 +410,16 @@ document.addEventListener("click", function(e){
     document.execCommand("copy");
 
     e.target.textContent = "تم النسخ ✓";
+    e.target.classList.add("copy-success");
 
     setTimeout(() => {
       e.target.textContent = "نسخ العنوان";
+      e.target.classList.remove("copy-success");
     }, 2000);
   }
 });
 </script>
+
 
   
 
