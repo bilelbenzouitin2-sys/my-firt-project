@@ -135,5 +135,26 @@ font-family: "Tajawal", Arial, sans-serif;
   background: rgba(255,255,255,0.20);
 }
 
+/* وضع يدوي عبر data-theme */
+html[data-theme="dark"]{
+  --pageText: #f4f6ff;
+  --cardBg: rgba(15,15,25,0.88);
+  --mutedText:#c7cbe3;
+  --navBg: rgba(0,0,0,0.45);
+  --navBorder: rgba(255,255,255,0.10);
+  --linkBg: rgba(255,255,255,0.08);
+  --linkBorder: rgba(255,255,255,0.10);
+}
+
+html[data-theme="light"]{
+  --pageText: #111;
+  --cardBg: rgba(255,255,255,0.95);
+  --mutedText:#555;
+  --navBg: rgba(0,0,0,0.20);
+  --navBorder: rgba(255,255,255,0.14);
+  --linkBg: rgba(255,255,255,0.12);
+  --linkBorder: rgba(255,255,255,0.14);
+}
+
 
 
