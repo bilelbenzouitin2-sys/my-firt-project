@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إرسال طلب</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="nav">
+  <div class="row">
+    <div class="brand">🧾 إرسال طلب</div>
+    <div class="links">
+      <a href="new-index.html">الرئيسية</a>
+      <a href="products.html">المنتجات</a>
+      <a href="order.html">إرسال طلب</a>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>أرسل طلبك</h1>
+  <p>ادفع USDT (TRC20) ثم أرسل البيانات + إثبات الدفع</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <span class="tag">الدفع</span>
+    <h3>الدفع عبر USDT (TRC20 فقط)</h3>
+    <p><b>عنوان USDT:</b></p>
+    <p style="word-break:break-all;background:#f4f4ff;padding:10px;border-radius:10px;">
+      TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ
+    </p>
+
+    <p>بعد الدفع، أرسل المعلومات التالية:</p>
+
+    <div style="margin-top:10px;">
+      <label>المنتج</label><br>
+      <input id="product" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="سيظهر تلقائيًا من صفحة المنتجات">
+    </div>
+
+    <div style="margin-top:10px;">
+      <label>اسمك</label><br>
+      <input style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="الاسم">
+    </div>
+
+    <div style="margin-top:10px;">
+      <label>WhatsApp أو Telegram</label><br>
+      <input style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: 216... أو @username">
+    </div>
+
+    <div style="margin-top:10px;">
+      <label>معرف الحساب / ID</label><br>
+      <input style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="ID أو Email">
+    </div>
+
+    <div style="margin-top:10px;">
+      <label>ملاحظات</label><br>
+      <textarea style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="أي تفاصيل..."></textarea>
+    </div>
+
+    <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a class="btn buy" href="https://wa.me/21658278321" target="_blank">إرسال عبر واتساب</a>
+      <a class="btn" style="background:white;border:1px solid #ddd;color:#333;" href="products.html">رجوع للمنتجات</a>
+    </div>
+
+    <p style="color:#555;margin-top:10px;font-size:13px;">
+      ✅ نصيحة: لا تُسلِّم قبل التأكد من وصول الدفع داخل Binance.
+    </p>
+  </div>
+
+</div>
+
+<div class="footer">© 2026</div>
+
+<script>
+  // جلب اسم المنتج من الرابط: order.html?product=...
+  const params = new URLSearchParams(window.location.search);
+  const product = params.get("product");
+  if(product){
+    document.getElementById("product").value = product;
+  }
+</script>
+
+</body>
+</html>
