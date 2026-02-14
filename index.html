@@ -194,13 +194,27 @@
       <p class="desc">اشتراك لمدة شهر. التسليم بعد تأكيد الدفع.</p>
       <p class="price">السعر: 10€</p>
       <div class="actions">
-        <p><strong>الدفع عبر USDT (شبكة TRC20 فقط)</strong></p>
-<p>TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ</p>
 
-<a class="btn chat" href="https://wa.me/21658278321" target="_blank">
-أرسل إثبات الدفع
-</a>
-      </div>
+  <div style="background:#f4f6ff;padding:10px;border-radius:10px;margin-bottom:10px;">
+    <strong>الدفع عبر USDT (TRC20 فقط)</strong><br>
+
+    <input type="text"
+      value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
+      class="usdtAddress"
+      readonly
+      style="width:100%;padding:6px;margin-top:6px;border-radius:6px;border:1px solid #ccc;font-size:12px;">
+  </div>
+
+  <button class="btn buy copyBtn">
+    نسخ العنوان
+  </button>
+
+  <a class="btn chat" href="https://wa.me/21658278321" target="_blank">
+    أرسل إثبات الدفع
+  </a>
+
+</div>
+
     </div>
 
     <div class="card" data-cat="subs" data-name="spotify اشتراك 3 أشهر">
@@ -209,24 +223,27 @@
       <p class="desc">اشتراك 3 أشهر. التسليم خلال دقائق.</p>
       <p class="price">السعر: 8€</p>
 <div class="actions">
+
   <div style="background:#f4f6ff;padding:10px;border-radius:10px;margin-bottom:10px;">
     <strong>الدفع عبر USDT (TRC20 فقط)</strong><br>
 
     <input type="text"
       value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
-      id="usdtSpotify"
+      class="usdtAddress"
       readonly
       style="width:100%;padding:6px;margin-top:6px;border-radius:6px;border:1px solid #ccc;font-size:12px;">
   </div>
 
-  <button class="btn buy" onclick="copySpotify()">
+  <button class="btn buy copyBtn">
     نسخ العنوان
   </button>
 
-  <a class="btn chat" href="https://t.me/Bilelbz" target="_blank">
+  <a class="btn chat" href="https://wa.me/21658278321" target="_blank">
     أرسل إثبات الدفع
   </a>
+
 </div>
+
 
     </div>
 
@@ -248,18 +265,28 @@
       <h3 class="title">حزمة VIP 5000</h3>
       <p class="desc">تأكيد سريع + دعم بعد البيع.</p>
       <p class="price">السعر: 18€</p>
-     <div class="actions">
+    <div class="actions">
+
   <div style="background:#f4f6ff;padding:10px;border-radius:10px;margin-bottom:10px;">
     <strong>الدفع عبر USDT (TRC20 فقط)</strong><br>
-    <small style="word-break:break-all;">
-      TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ
-    </small>
+
+    <input type="text"
+      value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
+      class="usdtAddress"
+      readonly
+      style="width:100%;padding:6px;margin-top:6px;border-radius:6px;border:1px solid #ccc;font-size:12px;">
   </div>
+
+  <button class="btn buy copyBtn">
+    نسخ العنوان
+  </button>
 
   <a class="btn chat" href="https://wa.me/21658278321" target="_blank">
     أرسل إثبات الدفع
   </a>
+
 </div>
+
 
     </div>
 
@@ -351,14 +378,25 @@
   }, 22000); // كل 22 ثانية
 </script>
   <script>
-function copySpotify(){
-  const copyText = document.getElementById("usdtSpotify");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("تم نسخ عنوان USDT");
-}
+document.addEventListener("click", function(e){
+  if(e.target.classList.contains("copyBtn")){
+    const card = e.target.closest(".card");
+    const input = card.querySelector(".usdtAddress");
+
+    input.select();
+    input.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+
+    e.target.textContent = "تم النسخ ✓";
+
+    setTimeout(() => {
+      e.target.textContent = "نسخ العنوان";
+    }, 2000);
+  }
+});
 </script>
+
+  
 
 </body>
 </html>
