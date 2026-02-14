@@ -155,6 +155,28 @@ html[data-theme="light"]{
   --linkBg: rgba(255,255,255,0.12);
   --linkBorder: rgba(255,255,255,0.14);
 }
+/* تطبيق المتغيرات على العناصر */
+body{
+  color: var(--pageText);
+}
+
+.card{
+  background: var(--cardBg);
+}
+
+.nav{
+  background: var(--navBg);
+}
+
+.links a{
+  background: var(--linkBg);
+  border: 1px solid var(--linkBorder);
+}
+
+.desc{
+  color: var(--mutedText);
+}
+
 
 
 
