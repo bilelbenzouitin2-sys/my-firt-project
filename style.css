@@ -1,1 +1,83 @@
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(-45deg,#667eea,#764ba2,#6a11cb,#2575fc);
+  background-size: 400% 400%;
+  animation: bg 10s ease infinite;
+}
+
+@keyframes bg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.nav{
+  background: rgba(0,0,0,0.2);
+  padding:15px;
+  color:white;
+}
+
+.nav .row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.links a{
+  color:white;
+  text-decoration:none;
+  margin-left:10px;
+}
+
+.hero{
+  text-align:center;
+  color:white;
+  padding:30px 15px;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+}
+
+.tag{
+  font-size:12px;
+  background:#eef;
+  padding:5px 10px;
+  border-radius:20px;
+}
+
+.btn{
+  display:inline-block;
+  padding:10px 15px;
+  border-radius:20px;
+  text-decoration:none;
+  margin-top:10px;
+}
+
+.buy{
+  background:#667eea;
+  color:white;
+}
+
+.footer{
+  text-align:center;
+  color:white;
+  padding:20px;
+}
 
