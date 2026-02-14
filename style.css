@@ -122,5 +122,18 @@ font-family: "Tajawal", Arial, sans-serif;
 .hero p{
   font-weight:500;
 }
+.theme-btn{
+  cursor:pointer;
+  padding:8px 12px;
+  border-radius:999px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: white;
+  font-size: 14px;
+}
+.theme-btn:hover{
+  background: rgba(255,255,255,0.20);
+}
+
 
 
