@@ -3,172 +3,228 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My 3D Website</title>
+  <title>متجر الاشتراكات والعملات</title>
 
   <style>
     body{
       margin:0;
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
       font-family: Arial, sans-serif;
-      background: linear-gradient(-45deg, #667eea, #764ba2, #6a11cb, #2575fc);
+      background: linear-gradient(-45deg,#667eea,#764ba2,#6a11cb,#2575fc);
       background-size: 400% 400%;
-      animation: gradientMove 10s ease infinite;
-      overflow:hidden;
+      animation: bg 10s ease infinite;
+      color:#111;
+    }
+    @keyframes bg{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
     }
 
-    @keyframes gradientMove{
-      0%{background-position:0% 50%;}
-      50%{background-position:100% 50%;}
-      100%{background-position:0% 50%;}
+    header{
+      padding:26px 18px;
+      text-align:center;
+      color:white;
+    }
+    header h1{margin:0 0 8px;font-size:28px}
+    header p{margin:0;opacity:.9}
+
+    .wrap{
+      max-width:1000px;
+      margin: 0 auto;
+      padding: 18px;
     }
 
-    /* يعطي إحساس 3D */
-    .scene{
-      perspective: 1000px;
+    .note{
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius:14px;
+      padding:12px 14px;
+      color:white;
+      margin: 14px 0;
+      line-height:1.7;
+    }
+
+    .bar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin: 10px 0 18px;
+    }
+    .bar input, .bar select{
+      padding:12px 14px;
+      border:none;
+      border-radius:999px;
+      outline:none;
+      min-width: 220px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
     }
 
     .card{
-      width: 420px;
       background: rgba(255,255,255,0.95);
-      border-radius: 22px;
-      padding: 38px 34px;
-      text-align:center;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
-      transform-style: preserve-3d;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      position: relative;
-      overflow: hidden;
-      animation: popIn 1s ease;
-    }
-
-    @keyframes popIn{
-      from{opacity:0; transform: translateY(30px) scale(0.98);}
-      to{opacity:1; transform: translateY(0) scale(1);}
-    }
-
-    /* لمعة تتحرك فوق الكارت */
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:-80px;
-      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 45%);
-      transform: translateZ(30px);
-      pointer-events:none;
-      opacity:0.7;
-      animation: shine 4s ease-in-out infinite;
-    }
-
-    @keyframes shine{
-      0%{transform: translate3d(-20px,-10px,30px);}
-      50%{transform: translate3d(40px,20px,30px);}
-      100%{transform: translate3d(-20px,-10px,30px);}
-    }
-
-    h1{
-      margin: 0 0 10px;
-      color:#222;
-      transform: translateZ(40px);
-      font-size: 34px;
-    }
-
-    .typing{
-      margin: 0 auto;
-      color:#555;
-      font-size:18px;
-      max-width: 320px;
+      border-radius:18px;
+      padding:16px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.22);
       overflow:hidden;
-      border-left: 3px solid #667eea; /* لأن الصفحة RTL */
-      white-space: nowrap;
-      transform: translateZ(35px);
-      animation: typing 3s steps(28) 0.4s both, blink 0.7s infinite;
+      position:relative;
+      transition: transform .15s ease;
     }
+    .card:hover{transform: translateY(-2px)}
 
-    @keyframes typing{ from{width:0} to{width:100%} }
-    @keyframes blink{ 50%{border-color:transparent} }
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef;
+      font-size:12px;
+      color:#334;
+      margin-bottom:10px;
+    }
+    .title{margin:0 0 8px;font-size:18px}
+    .desc{margin:0 0 12px;color:#555;font-size:14px;line-height:1.6}
+    .price{font-weight:bold;margin:0 0 12px}
 
-    button{
-      margin-top:22px;
-      padding: 12px 26px;
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
       border:none;
-      border-radius: 999px;
-      font-size:16px;
       cursor:pointer;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:14px;
+      transition:.2s;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .buy{
+      background: linear-gradient(135deg,#667eea,#764ba2);
       color:white;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      transform: translateZ(45px);
-      transition: transform 0.2s ease, filter 0.2s ease;
-      position: relative;
-      overflow:hidden;
+    }
+    .buy:hover{transform: scale(1.03)}
+    .chat{
+      background:#fff;
+      color:#333;
+      border:1px solid #ddd;
     }
 
-    /* لمعة على الزر */
-    button::after{
-      content:"";
-      position:absolute;
-      top:-50%;
-      left:-40%;
-      width:40%;
-      height:200%;
-      background: rgba(255,255,255,0.35);
-      transform: rotate(25deg);
-      transition: left 0.5s ease;
-    }
-
-    button:hover{
-      transform: translateZ(45px) scale(1.08);
-      filter: brightness(1.05);
-    }
-
-    button:hover::after{
-      left: 120%;
-    }
-
-    .hint{
-      margin-top:12px;
-      color:#777;
-      font-size:13px;
-      transform: translateZ(25px);
+    footer{
+      text-align:center;
+      color:white;
+      padding:18px;
+      opacity:.9;
     }
   </style>
 </head>
 
 <body>
-  <div class="scene">
-    <div class="card" id="card">
-      <h1>مرحبا 👋</h1>
-      <p class="typing">أنا أتعلم البرمجة وأصبح مطور محترف 🚀</p>
-      <button onclick="alert('أحسنت! 👏 استمر بالتعلم')">اضغط هنا</button>
-      <div class="hint">حرّك الماوس فوق البطاقة لرؤية 3D</div>
-    </div>
+
+<header>
+  <h1>متجر الاشتراكات والعملات</h1>
+  <p>شراء سريع + تسليم عبر واتساب/تلغرام</p>
+</header>
+
+<div class="wrap">
+
+  <div class="note">
+    ✅ غيّر روابط الشراء (payment links) ووسيلة التواصل من داخل الكود.<br/>
+    ⚠️ تأكد أن منتجات “العملات” مسموحة حسب شروط المنصة/اللعبة.
   </div>
 
-  <script>
-    const card = document.getElementById("card");
+  <div class="bar">
+    <input id="q" placeholder="ابحث عن منتج... (مثال: Netflix / UC / VIP)" />
+    <select id="cat">
+      <option value="all">كل الأقسام</option>
+      <option value="subs">اشتراكات</option>
+      <option value="coins">عملات</option>
+    </select>
+  </div>
 
-    // حركة 3D مع الماوس
-    card.addEventListener("mousemove", (e) => {
-      const r = card.getBoundingClientRect();
-      const x = e.clientX - r.left;   // داخل الكارت
-      const y = e.clientY - r.top;
+  <div class="grid" id="grid">
 
-      const midX = r.width / 2;
-      const midY = r.height / 2;
+    <!-- اشتراكات -->
+    <div class="card" data-cat="subs" data-name="netflix اشتراك شهر">
+      <span class="tag">اشتراك</span>
+      <h3 class="title">Netflix - شهر</h3>
+      <p class="desc">اشتراك لمدة شهر. التسليم بعد تأكيد الدفع.</p>
+      <p class="price">السعر: 10€</p>
+      <div class="actions">
+        <a class="btn buy" href="PUT_YOUR_PAYMENT_LINK_HERE" target="_blank">شراء الآن</a>
+        <a class="btn chat" href="https://wa.me/PUT_YOUR_NUMBER" target="_blank">واتساب</a>
+      </div>
+    </div>
 
-      const rotateY = ((x - midX) / midX) * 10;   // يمين/يسار
-      const rotateX = -((y - midY) / midY) * 10;  // فوق/تحت
+    <div class="card" data-cat="subs" data-name="spotify اشتراك 3 أشهر">
+      <span class="tag">اشتراك</span>
+      <h3 class="title">Spotify - 3 أشهر</h3>
+      <p class="desc">اشتراك 3 أشهر. التسليم خلال دقائق.</p>
+      <p class="price">السعر: 8€</p>
+      <div class="actions">
+        <a class="btn buy" href="PUT_YOUR_PAYMENT_LINK_HERE" target="_blank">شراء الآن</a>
+        <a class="btn chat" href="https://t.me/PUT_YOUR_USERNAME" target="_blank">تلغرام</a>
+      </div>
+    </div>
 
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      card.style.boxShadow = `${-rotateY*2}px ${rotateX*2 + 25}px 70px rgba(0,0,0,0.28)`;
+    <!-- عملات -->
+    <div class="card" data-cat="coins" data-name="عملات 1000 coin">
+      <span class="tag">عملات</span>
+      <h3 class="title">حزمة عملات 1000</h3>
+      <p class="desc">أرسل معرفك/ID بعد الدفع وسيتم الشحن.</p>
+      <p class="price">السعر: 5€</p>
+      <div class="actions">
+        <a class="btn buy" href="PUT_YOUR_PAYMENT_LINK_HERE" target="_blank">شراء الآن</a>
+        <a class="btn chat" href="https://wa.me/PUT_YOUR_NUMBER" target="_blank">تواصل</a>
+      </div>
+    </div>
+
+    <div class="card" data-cat="coins" data-name="vip عملات 5000">
+      <span class="tag">عملات</span>
+      <h3 class="title">حزمة VIP 5000</h3>
+      <p class="desc">تأكيد سريع + دعم بعد البيع.</p>
+      <p class="price">السعر: 18€</p>
+      <div class="actions">
+        <a class="btn buy" href="PUT_YOUR_PAYMENT_LINK_HERE" target="_blank">شراء الآن</a>
+        <a class="btn chat" href="https://t.me/PUT_YOUR_USERNAME" target="_blank">تلغرام</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  © <span id="y"></span> — متجر الاشتراكات والعملات
+</footer>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+
+  const q = document.getElementById("q");
+  const cat = document.getElementById("cat");
+  const cards = [...document.querySelectorAll(".card")];
+
+  function apply(){
+    const term = (q.value || "").trim().toLowerCase();
+    const c = cat.value;
+    cards.forEach(card=>{
+      const name = card.dataset.name.toLowerCase();
+      const okTerm = !term || name.includes(term);
+      const okCat = (c==="all") || (card.dataset.cat===c);
+      card.style.display = (okTerm && okCat) ? "" : "none";
     });
+  }
 
-    // رجوع للوضع الطبيعي
-    card.addEventListener("mouseleave", () => {
-      card.style.transform = "rotateX(0deg) rotateY(0deg)";
-      card.style.boxShadow = "0 25px 60px rgba(0,0,0,0.25)";
-    });
-  </script>
+  q.addEventListener("input", apply);
+  cat.addEventListener("change", apply);
+</script>
+
 </body>
 </html>
