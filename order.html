@@ -25,6 +25,16 @@
   <h1>أرسل طلبك</h1>
   <p>ادفع USDT (TRC20) ثم أرسل البيانات + إثبات الدفع</p>
 </div>
+  <div class="topBar">
+  <div class="box">
+    <div>✅ طلبات اليوم: <b id="ordersToday">0</b></div>
+    <div style="opacity:.9">آخر تحديث: <span id="lastUpdate">الآن</span></div>
+  </div>
+</div>
+
+
+
+  
 
 <div class="container">
 
@@ -89,6 +99,7 @@
     document.getElementById("product").value = product;
   }
 </script>
+  <div id="toast"></div>
 <script src="theme.js"></script>
 
 </body>
