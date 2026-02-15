@@ -91,6 +91,36 @@
 
   <div class="footer">© 2026</div>
 <div id="toast"></div>
+  <!-- زر مخفي (يظهر فقط عند الضغط على Alt + A) -->
+<button id="adminOpen" class="admin-fab" type="button" title="Admin">⚙️</button>
+
+<!-- نافذة الإدارة -->
+<div id="adminModal" class="admin-modal" style="display:none;">
+  <div class="admin-card">
+    <div class="admin-head">
+      <div style="font-weight:800;">لوحة الإدارة</div>
+      <button id="adminClose" class="btn chat" type="button">إغلاق</button>
+    </div>
+
+    <div class="admin-login" id="adminLogin">
+      <p class="small">أدخل كلمة السر لفتح الإدارة</p>
+      <input id="adminPass" class="admin-input" placeholder="كلمة السر" type="password">
+      <button id="adminEnter" class="btn buy" type="button">دخول</button>
+      <p class="small" style="opacity:.8;margin-top:8px;">ملاحظة: هذا ليس نظام حماية قوي (لأنه بدون سيرفر).</p>
+    </div>
+
+    <div id="adminPanel" style="display:none;">
+      <p class="small">غيّر السعر أو أخفِ المنتج، ثم اضغط “حفظ”.</p>
+      <div id="adminList" class="admin-list"></div>
+
+      <div class="admin-actions">
+        <button id="adminSave" class="btn buy" type="button">حفظ التغييرات</button>
+        <button id="adminReset" class="btn chat" type="button">إرجاع الافتراضي</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   
   <script src="cart.js"></script>
   <script src="app.js"></script>
