@@ -102,7 +102,8 @@ function renderProducts(list = getEffectiveProducts()){
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  renderProducts(PRODUCTS);
+  renderProducts(getEffectiveProducts());
+
 
   let currentFilter = "all";
 
@@ -111,9 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyFilters(){
 
-    const q = input.value.trim().toLowerCase();
+    const q = (input?.value || "").trim().toLowerCase();
 
-    const filtered = PRODUCTS.filter(p => {
+
+    const filtered = getEffectiveProducts().filter(p => { ... })
+
 
       const matchesSearch =
         !q || `${p.name} ${p.category}`.toLowerCase().includes(q);
