@@ -45,9 +45,17 @@
 
 
 <div class="container">
-  <div class="searchBar">
-    <input id="searchInput" type="text" placeholder="ابحث عن منتج... (Netflix / VIP / Coins)">
+<div class="searchBar">
+
+  <div class="filters">
+    <button class="filterBtn active" data-filter="all">الكل</button>
+    <button class="filterBtn" data-filter="اشتراك">اشتراكات</button>
+    <button class="filterBtn" data-filter="عملات">عملات</button>
   </div>
+
+  <input id="searchInput" type="text" placeholder="ابحث عن منتج...">
+</div>
+
 
   <div class="grid" id="productsGrid"></div>
 </div>
