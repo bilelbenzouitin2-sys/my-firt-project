@@ -203,6 +203,33 @@ html[data-theme="dark"] .badge{
   border: 1px solid rgba(255,255,255,0.14);
   color: #f4f6ff;
 }
+/* ===== Checkout Steps ===== */
+.steps{
+  max-width:1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top: -10px;
+}
+
+.step{
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.step.done{
+  background: rgba(0, 255, 170, 0.18);
+  border-color: rgba(0, 255, 170, 0.25);
+}
+
 
 
 
