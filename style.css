@@ -283,6 +283,23 @@ html[data-theme="dark"] .badge{
   font-size: 13px;
   opacity: .95;
 }
+.guarantees{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-bottom: 14px;
+}
+.gItem{
+  padding:8px 12px;
+  border-radius:999px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.18);
+  color:white;
+  font-size:13px;
+  backdrop-filter: blur(10px);
+}
+
 
 
 
