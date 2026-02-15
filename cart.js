@@ -94,4 +94,39 @@ document.addEventListener("click", (e) => {
   renderCart();
 });
 
+function buildOrderText(){
+  const cart = getCart();
+  if(cart.length === 0) return "";
+
+  let lines = cart.map((it, i) => {
+    const lineTotal = (Number(it.price) * it.qty).toFixed(2);
+    return `${i+1}) ${it.name} × ${it.qty} = ${lineTotal}€`;
+  });
+
+  const total = cart.reduce((s,it)=> s + Number(it.price)*it.qty, 0).toFixed(2);
+
+  return `طلب جديد:\n` + lines.join("\n") + `\n\nالمجموع: ${total}€`;
+}
+
+document.addEventListener("click", (e) => {
+  const link = e.target.closest("#sendOrder");
+  if(!link) return;
+
+  const cart = getCart();
+  if(cart.length === 0){
+    e.preventDefault();
+    if(typeof window.showToast === "function"){
+      window.showToast("🛒 السلة فارغة");
+    }
+    return;
+  }
+
+  const total = cart.reduce((s,it)=> s + Number(it.price)*it.qty, 0).toFixed(2);
+  const text = buildOrderText();
+
+  // نحول النص لرابط
+  const url = `order.html?items=${encodeURIComponent(text)}&total=${encodeURIComponent(total)}`;
+  link.href = url;
+});
+
 window.addEventListener("DOMContentLoaded", renderCart);
