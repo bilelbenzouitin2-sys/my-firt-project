@@ -1,117 +1,172 @@
-// ====== تخزين المنتجات ======
-const LS_PRODUCTS = "store_products_v2";
-
-// افتراضي (يتزرع أول مرة فقط)
-const DEFAULT_PRODUCTS = [
-  { id:"netflix1", name:"Netflix - شهر", price:10, category:"اشتراك", image:"https://via.placeholder.com/800x480?text=Netflix", hidden:false },
-  { id:"spotify1", name:"Spotify - 3 أشهر", price:8, category:"اشتراك", image:"https://via.placeholder.com/800x480?text=Spotify", hidden:false },
-  { id:"coins1000", name:"حزمة عملات 1000", price:5, category:"عملات", image:"https://via.placeholder.com/800x480?text=Coins", hidden:false },
-  { id:"vip5000", name:"حزمة VIP 5000", price:18, category:"عملات", image:"https://via.placeholder.com/800x480?text=VIP", hidden:false },
+// ===== المنتجات الأساسية =====
+const PRODUCTS = [
+  {
+    id: "netflix1",
+    name: "Netflix - شهر",
+    price: 10,
+    category: "اشتراك",
+    desc: "اشتراك لمدة شهر. التسليم بعد تأكيد الدفع.",
+    image: "https://via.placeholder.com/640x360?text=Netflix"
+  },
+  {
+    id: "spotify1",
+    name: "Spotify - 3 أشهر",
+    price: 8,
+    category: "اشتراك",
+    desc: "اشتراك 3 أشهر. التسليم خلال دقائق.",
+    image: "https://via.placeholder.com/640x360?text=Spotify"
+  },
+  {
+    id: "coins1000",
+    name: "حزمة عملات 1000",
+    price: 5,
+    category: "عملات",
+    desc: "أرسل معرفك/ID بعد الدفع وسيتم الشحن.",
+    image: "https://via.placeholder.com/640x360?text=Coins+1000"
+  },
+  {
+    id: "vip5000",
+    name: "حزمة VIP 5000",
+    price: 18,
+    category: "عملات",
+    desc: "تأكيد سريع + دعم بعد البيع.",
+    image: "https://via.placeholder.com/640x360?text=VIP+5000"
+  }
 ];
 
-function seedProductsIfEmpty(){
-  const raw = localStorage.getItem(LS_PRODUCTS);
-  if(!raw){
-    localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
-  }
+// ===== Admin Overrides =====
+const OV_KEY = "admin_overrides_v2";
+
+function loadOverrides(){
+  try { return JSON.parse(localStorage.getItem(OV_KEY) || "{}"); }
+  catch { return {}; }
+}
+function saveOverrides(obj){
+  localStorage.setItem(OV_KEY, JSON.stringify(obj));
+}
+function resetOverrides(){
+  localStorage.removeItem(OV_KEY);
 }
 
-function loadProducts(){
-  try{
-    const data = JSON.parse(localStorage.getItem(LS_PRODUCTS) || "[]");
-    if(!Array.isArray(data) || data.length === 0) return DEFAULT_PRODUCTS;
-    return data;
-  }catch(e){
-    return DEFAULT_PRODUCTS;
-  }
+function getEffectiveProducts(){
+  const ov = loadOverrides();
+
+  return PRODUCTS
+    .map(p => {
+      const o = ov[p.id] || {};
+      return {
+        ...p,
+        name: (o.name ?? p.name),
+        desc: (o.desc ?? p.desc),
+        image: (o.image ?? p.image),
+        category: (o.category ?? p.category),
+        price: (o.price !== undefined) ? Number(o.price) : Number(p.price),
+        hidden: !!o.hidden
+      };
+    })
+    .filter(p => !p.hidden);
 }
 
-function getVisibleProducts(){
-  return loadProducts().filter(p => !p.hidden);
+// ===== Render =====
+function cardHTML(p){
+  return `
+  <article class="card productCard">
+    <div class="productMedia">
+      <img class="productImg" src="${p.image}" alt="${escapeHTML(p.name)}" loading="lazy" />
+      <span class="tag tag--floating">${p.category}</span>
+    </div>
+
+    <div class="productBody">
+      <h3 class="productTitle">${escapeHTML(p.name)}</h3>
+      <p class="productDesc">${escapeHTML(p.desc)}</p>
+
+      <div class="productMeta">
+        <div class="priceBox">
+          <span class="priceLabel">السعر</span>
+          <span class="priceValue">${formatEUR(p.price)}</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn buy addToCart"
+          data-id="${p.id}"
+          data-name="${escapeAttr(p.name)}"
+          data-price="${p.price}">
+          ➕ أضف للسلة
+        </button>
+
+        <a class="btn chat" href="product.html?id=${encodeURIComponent(p.id)}">
+          👁️ صفحة المنتج
+        </a>
+
+        <a class="btn ghost" href="order.html?product=${encodeURIComponent(p.name)}">
+          ⚡ طلب الآن
+        </a>
+      </div>
+    </div>
+  </article>`;
 }
 
-function escapeHtml(str){
-  return String(str||"")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-
-// ====== عرض المنتجات ======
 function renderProducts(list){
   const grid = document.getElementById("productsGrid");
   if(!grid) return;
 
   if(!list || list.length === 0){
     grid.innerHTML = `
-      <div class="card">
+      <div class="card emptyCard">
         <h3>لا توجد نتائج</h3>
-        <p class="desc">جرّب كلمة بحث أخرى.</p>
+        <p class="muted">جرّب كلمة بحث أخرى أو غيّر الفلتر.</p>
       </div>
     `;
     return;
   }
 
-  grid.innerHTML = list.map(p => `
-    <div class="card">
-      <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" class="productImg">
-      <span class="tag">${escapeHtml(p.category)}</span>
-      <h3>${escapeHtml(p.name)}</h3>
-      <p class="price">السعر: ${Number(p.price).toFixed(2).replace(".00","")}€</p>
-
-      <div class="actions">
-        <button class="btn buy addToCart"
-          data-id="${escapeHtml(p.id)}"
-          data-name="${escapeHtml(p.name)}"
-          data-price="${Number(p.price)}">
-          أضف للسلة
-        </button>
-
-        <a class="btn chat" href="product.html?id=${encodeURIComponent(p.id)}">
-          صفحة المنتج
-        </a>
-
-        <a class="btn chat" href="cart.html">
-          فتح السلة
-        </a>
-      </div>
-    </div>
-  `).join("");
+  grid.innerHTML = list.map(cardHTML).join("");
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  seedProductsIfEmpty();
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[m]));
+}
+function escapeAttr(s){
+  return String(s).replace(/"/g, "&quot;");
+}
+function formatEUR(n){
+  const x = Number(n || 0);
+  return `${x}€`;
+}
 
+// ===== Filters/Search =====
+document.addEventListener("DOMContentLoaded", () => {
   let currentFilter = "all";
+
   const input = document.getElementById("searchInput");
   const filterButtons = document.querySelectorAll(".filterBtn");
 
-  function applyFilters(){
+  function apply(){
     const q = (input?.value || "").trim().toLowerCase();
-    const products = getVisibleProducts();
+    const list = getEffectiveProducts();
 
-    const filtered = products.filter(p => {
-      const text = `${p.name} ${p.category}`.toLowerCase();
-      const matchesSearch = !q || text.includes(q);
+    const filtered = list.filter(p => {
       const matchesCategory = currentFilter === "all" || p.category === currentFilter;
-      return matchesSearch && matchesCategory;
+      const matchesSearch = !q || `${p.name} ${p.desc} ${p.category}`.toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
     });
 
     renderProducts(filtered);
   }
 
-  applyFilters();
-
-  if(input) input.addEventListener("input", applyFilters);
+  if(input) input.addEventListener("input", apply);
 
   filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       filterButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       currentFilter = btn.dataset.filter;
-      applyFilters();
+      apply();
     });
   });
 
-  // تحديث تلقائي عند الرجوع من admin.html
-  window.addEventListener("focus", applyFilters);
+  apply();
 });
