@@ -174,6 +174,10 @@ document.addEventListener("click", (e) => {
     `&entry.1501585959=${encodeURIComponent(notesFinal)}`;     // الملاحظات
 
   window.open(formURL, "_blank");
+  setTimeout(() => {
+  window.location.href = "thankyou.html";
+}, 1000);
+
   document.querySelectorAll(".step")[3]?.classList.add("done");
   if(typeof window.showToast === "function"){
   window.showToast("✅ تم تجهيز الطلب وفتح النموذج");
