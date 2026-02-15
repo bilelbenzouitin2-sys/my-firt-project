@@ -25,69 +25,66 @@
   <h1>سلة المشتريات</h1>
   <p>اختر الكميات ثم أرسل طلب واحد</p>
 </div>
-
 <div class="container">
   <div id="cartList"></div>
+
+  <!-- الدفع -->
   <div class="card" style="margin-top:12px">
-  <span class="tag">🧾 بيانات الزبون</span>
-    <div class="card" style="margin-top:12px">
-  <span class="tag">💳 الدفع</span>
+    <span class="tag">💳 الدفع</span>
 
-  <p><strong>ادفع عبر USDT (شبكة TRC20 فقط)</strong></p>
+    <p><strong>ادفع عبر USDT (شبكة TRC20 فقط)</strong></p>
 
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
-    <input id="usdtAddress"
-      type="text"
-      value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
-      readonly
-      style="flex:1;padding:10px;border-radius:10px;border:1px solid #ccc;font-size:13px;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
+      <input id="usdtAddress"
+        type="text"
+        value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
+        readonly
+        style="flex:1;padding:10px;border-radius:10px;border:1px solid #ccc;font-size:13px;">
 
-    <button class="btn chat" id="copyUSDT" type="button">
-      نسخ العنوان
-    </button>
+      <button class="btn chat" id="copyUSDT" type="button">
+        نسخ العنوان
+      </button>
+    </div>
+
+    <p style="margin-top:8px;font-size:13px;color:#777;">
+      ⚠️ تأكد من اختيار شبكة TRC20 داخل Binance.
+    </p>
   </div>
 
-  <p style="margin-top:8px;font-size:13px;color:#777;">
-    ⚠️ تأكد من اختيار شبكة TRC20 داخل Binance.
-  </p>
-</div>
+  <!-- بيانات الزبون -->
+  <div class="card" style="margin-top:12px">
+    <span class="tag">🧾 بيانات الزبون</span>
 
+    <div style="margin-top:10px;">
+      <label>الاسم الكامل</label><br>
+      <input id="custName" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: Bilel">
+    </div>
 
-  <div style="margin-top:10px;">
-    <label>الاسم الكامل</label><br>
-    <input id="custName" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: Bilel">
-  </div>
+    <div style="margin-top:10px;">
+      <label>رقم واتساب أو تلغرام</label><br>
+      <input id="custContact" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: 216... أو @username">
+    </div>
 
-  <div style="margin-top:10px;">
-    <label>رقم واتساب أو تلغرام</label><br>
-    <input id="custContact" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: 216... أو @username">
-  </div>
-
-  <div style="margin-top:10px;">
-    <label>معرف الحساب / ID (اختياري)</label><br>
-    <input id="custId" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="ID أو Email">
-  </div>
-
-  <div class="actions" style="margin-top:12px">
-    <button class="btn buy" id="sendFormCart" type="button">إرسال الطلب للنموذج الرسمي</button>
-    <a class="btn chat" href="products.html">إضافة منتجات</a>
-  </div>
-
-  <p class="small" style="margin-top:10px">
-    سيتم إرسال محتوى السلة تلقائيًا إلى Google Form.
-  </p>
-</div>
-
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-      <div style="font-weight:800">المجموع:</div>
-      <div style="font-size:18px"><span id="cartTotal">0€</span></div>
+    <div style="margin-top:10px;">
+      <label>معرف الحساب / ID (اختياري)</label><br>
+      <input id="custId" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="ID أو Email">
     </div>
 
     <div class="actions" style="margin-top:12px">
-    <a class="btn buy" href="order.html" id="sendOrder">إرسال الطلب</a>
+      <button class="btn buy" id="sendFormCart" type="button">إرسال الطلب للنموذج الرسمي</button>
       <a class="btn chat" href="products.html">إضافة منتجات</a>
+    </div>
+
+    <p class="small" style="margin-top:10px">
+      سيتم إرسال محتوى السلة تلقائيًا إلى Google Form.
+    </p>
+  </div>
+
+  <!-- المجموع -->
+  <div class="card" style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="font-weight:800">المجموع:</div>
+      <div style="font-size:18px"><span id="cartTotal">0€</span></div>
     </div>
 
     <p class="small" style="margin-top:10px">
@@ -96,6 +93,8 @@
   </div>
 </div>
 
+
+  
 <div id="toast"></div>
 <div class="footer">© 2026</div>
 
