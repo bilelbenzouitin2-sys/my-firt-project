@@ -122,7 +122,63 @@ document.addEventListener("click", (e) => {
   const total = cart.reduce((s,it)=> s + Number(it.price)*it.qty, 0).toFixed(2);
   const text = buildOrderText();
   link.href = `order.html?items=${encodeURIComponent(text)}&total=${encodeURIComponent(total)}`;
+  window.addEventListener("DOMContentLoaded", renderCart);
+});
+function buildOrderTextFromCart(cart){
+  const total = cart.reduce((s,it)=> s + Number(it.price)*it.qty, 0).toFixed(2);
+
+  const lines = cart.map((it, i) => {
+    const lineTotal = (Number(it.price) * it.qty).toFixed(2);
+    return `${i+1}) ${it.name} × ${it.qty} = ${lineTotal}€`;
+  });
+
+  return {
+    total,
+    productText: cart.map(it => it.name).join(", "),
+    notesText: `تفاصيل الطلب:\n${lines.join("\n")}\n\nالمجموع: ${total}€`
+  };
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("#sendFormCart");
+  if(!btn) return;
+
+  const cart = getCart();
+  if(cart.length === 0){
+    if(typeof window.showToast === "function") window.showToast("🛒 السلة فارغة");
+    else alert("السلة فارغة");
+    return;
+  }
+
+  const name = (document.getElementById("custName")?.value || "").trim();
+  const contact = (document.getElementById("custContact")?.value || "").trim();
+  const custId = (document.getElementById("custId")?.value || "").trim();
+
+  if(!name || !contact){
+    if(typeof window.showToast === "function") window.showToast("✍️ اكتب الاسم + وسيلة التواصل");
+    else alert("اكتب الاسم ووسيلة التواصل");
+    return;
+  }
+
+  const { productText, notesText, total } = buildOrderTextFromCart(cart);
+
+  // نضيف ID إن وُجد
+  const notesFinal = custId ? (notesText + `\n\nID: ${custId}`) : notesText;
+
+  // 🔥 رابط Google Form (من رابطك)
+  const formURL =
+    `https://docs.google.com/forms/d/e/1FAIpQLSexYxFzEsMCORrb6tH5v5jz1RhkT_n7j8iKV6nvRc7JShKdhw/viewform?usp=pp_url` +
+    `&entry.1761190354=${encodeURIComponent(name)}` +          // الاسم الكامل
+    `&entry.2046128795=${encodeURIComponent(contact)}` +       // واتساب/تلغرام
+    `&entry.138503007=${encodeURIComponent(productText)}` +    // اسم المنتج
+    `&entry.1501585959=${encodeURIComponent(notesFinal)}`;     // الملاحظات
+
+  window.open(formURL, "_blank");
+
+  // ✅ اختياري: تفريغ السلة بعد فتح النموذج
+  // localStorage.removeItem("cart_items");
+  // renderCart();
 });
 
 
-window.addEventListener("DOMContentLoaded", renderCart);
+
