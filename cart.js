@@ -174,11 +174,40 @@ document.addEventListener("click", (e) => {
     `&entry.1501585959=${encodeURIComponent(notesFinal)}`;     // الملاحظات
 
   window.open(formURL, "_blank");
-
-  // ✅ اختياري: تفريغ السلة بعد فتح النموذج
-  // localStorage.removeItem("cart_items");
-  // renderCart();
+  if(typeof window.showToast === "function"){
+  window.showToast("✅ تم تجهيز الطلب وفتح النموذج");
+}
 });
+// حفظ بيانات الزبون
+function saveCustomer(){
+  const name = document.getElementById("custName")?.value || "";
+  const contact = document.getElementById("custContact")?.value || "";
+  const custId = document.getElementById("custId")?.value || "";
+  localStorage.setItem("cust_name", name);
+  localStorage.setItem("cust_contact", contact);
+  localStorage.setItem("cust_id", custId);
+}
+
+// تعبئة البيانات عند فتح الصفحة
+window.addEventListener("DOMContentLoaded", () => {
+  const n = localStorage.getItem("cust_name") || "";
+  const c = localStorage.getItem("cust_contact") || "";
+  const i = localStorage.getItem("cust_id") || "";
+  const nameEl = document.getElementById("custName");
+  const contactEl = document.getElementById("custContact");
+  const idEl = document.getElementById("custId");
+  if(nameEl) nameEl.value = n;
+  if(contactEl) contactEl.value = c;
+  if(idEl) idEl.value = i;
+});
+
+// حفظ عند الكتابة
+document.addEventListener("input", (e) => {
+  if(e.target?.id === "custName" || e.target?.id === "custContact" || e.target?.id === "custId"){
+    saveCustomer();
+  }
+});
+
 
 
 
