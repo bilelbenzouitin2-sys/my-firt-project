@@ -14,8 +14,7 @@
     <div class="links">
       <a href="new-index.html">الرئيسية</a>
       <a href="products.html">المنتجات</a>
-      <a href="order.html">إرسال طلب</a>
-      <a href="cart.html">🛒 السلة</a>
+      <a href="cart.html" id="cartLink">🛒 السلة (<span id="cartCount">0</span>)</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
@@ -23,11 +22,10 @@
 
 <div class="hero">
   <h1>قائمة المنتجات</h1>
-  <p>اختر المنتج ثم أضفه للسلة</p>
+  <p>اختر المنتج ثم أضفه للسلة أو افتح صفحة المنتج</p>
 </div>
 
 <div class="container">
-
   <div class="searchBar">
     <div class="filters">
       <button class="filterBtn active" data-filter="all">الكل</button>
@@ -38,87 +36,13 @@
   </div>
 
   <div class="grid" id="productsGrid"></div>
-
 </div>
 
 <div class="footer">© 2026</div>
-
 <div id="toast"></div>
-
-<!-- زر الإدارة (مخفي بالبداية) -->
-<button id="adminOpen" style="
-position:fixed;
-bottom:20px;
-right:20px;
-display:none;
-z-index:9999;
-padding:10px 14px;
-border-radius:50%;
-background:#111;
-color:white;
-border:none;
-cursor:pointer;
-">⚙️</button>
-
-<!-- نافذة الإدارة -->
-<div id="adminModal" style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.6);
-justify-content:center;
-align-items:center;
-z-index:9998;
-">
-
-  <div style="
-  background:white;
-  width:95%;
-  max-width:500px;
-  padding:20px;
-  border-radius:15px;
-  max-height:90vh;
-  overflow:auto;
-  position:relative;
-  ">
-
-    <button id="adminClose" style="
-    position:absolute;
-    top:10px;
-    left:10px;
-    border:none;
-    background:none;
-    font-size:20px;
-    cursor:pointer;
-    ">✖</button>
-
-    <div id="adminLogin">
-      <h3>🔐 تسجيل دخول الإدارة</h3>
-      <input id="adminPass"
-        type="password"
-        placeholder="كلمة السر"
-        style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-top:10px;">
-      <button id="adminEnter"
-        class="btn buy"
-        style="margin-top:10px;width:100%;">دخول</button>
-    </div>
-
-    <div id="adminPanel" style="display:none;">
-      <h3>⚙️ تعديل المنتجات</h3>
-      <div id="adminList"></div>
-
-      <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button id="adminSave" class="btn buy">حفظ</button>
-        <button id="adminReset" class="btn chat">إرجاع الافتراضي</button>
-      </div>
-    </div>
-
-  </div>
-</div>
 
 <script src="cart.js"></script>
 <script src="products.js"></script>
 <script src="theme.js"></script>
-
 </body>
 </html>
