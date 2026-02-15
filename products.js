@@ -43,13 +43,15 @@ const LS_PRODUCTS = "products_db_v2";   // upgraded db
 const LS_CART = "cart_v1";
 const LS_SALES = "sales_counter_v1";
 const LS_CURRENCY = "currency_pref_v1";
+// ================== CURRENCY (AUTO RATES) ==================
+const LS_CURRENCY = "currency_pref_v1";
+const FX_CACHE_KEY = "fx_rates_cache_v1";
 
-// ================== CURRENCY ==================
-// افتراضي: EUR
+// العملات التي تريد عرضها
 const CURRENCIES = {
-  EUR: { symbol: "€", rate: 1 },
-  TND: { symbol: "د.ت", rate: 3.35 }, // معدل تقريبي - يمكنك تغييره
-  USD: { symbol: "$", rate: 1.08 }    // معدل تقريبي - يمكنك تغييره
+  EUR: { symbol: "€" },
+  TND: { symbol: "د.ت" },
+  USD: { symbol: "$" }
 };
 
 function getCurrency(){
@@ -59,14 +61,70 @@ function setCurrency(code){
   localStorage.setItem(LS_CURRENCY, code);
 }
 
+// تحميل الكاش (إن وجد)
+function loadFxCache(){
+  try { return JSON.parse(localStorage.getItem(FX_CACHE_KEY) || "null"); }
+  catch(e){ return null; }
+}
+function saveFxCache(obj){
+  localStorage.setItem(FX_CACHE_KEY, JSON.stringify(obj));
+}
+
+// جلب أسعار الصرف من الإنترنت (Base: EUR)
+async function refreshFxRatesIfNeeded(){
+  const cache = loadFxCache();
+  const now = Date.now();
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+
+  // إذا عندنا كاش جديد (أقل من 24 ساعة) لا نعيد التحميل
+  if(cache && cache.timestamp && (now - cache.timestamp) < ONE_DAY && cache.rates){
+    return cache;
+  }
+
+  // تحميل جديد
+  try{
+    const res = await fetch("https://open.er-api.com/v6/latest/eur", { cache: "no-store" });
+    const data = await res.json();
+
+    // تأكد من نجاح الاستجابة
+    if(data && data.result === "success" && data.base_code === "EUR" && data.rates){
+      const obj = {
+        timestamp: now,
+        rates: data.rates
+      };
+      saveFxCache(obj);
+      return obj;
+    }
+  }catch(err){
+    // تجاهل
+  }
+
+  // في حال فشل التحميل: رجع آخر كاش لو موجود
+  return cache || { timestamp: now, rates: { EUR: 1 } };
+}
+
+// نحصل على سعر عملة مقابل EUR
+function rateFromEUR(code){
+  const cache = loadFxCache();
+  if(!cache || !cache.rates) return (code === "EUR" ? 1 : 0);
+
+  // API يعطي rates بحيث: 1 EUR = rates[CODE]
+  const r = cache.rates[code];
+  if(!r) return (code === "EUR" ? 1 : 0);
+  return Number(r);
+}
+
+// تحويل السعر من EUR إلى العملة المختارة وعرضه
 function moneyFromEUR(eur){
   const code = getCurrency();
-  const cfg = CURRENCIES[code] || CURRENCIES.EUR;
-  const v = Number(eur || 0) * Number(cfg.rate || 1);
+  const symbol = (CURRENCIES[code]?.symbol || "€");
+  const rate = rateFromEUR(code) || 1;
 
-  // تنسيق بسيط
+  const v = Number(eur || 0) * rate;
+
+  // تنسيق حسب العملة (TND نعطيها رقمين)
   const rounded = (code === "TND") ? v.toFixed(2) : v.toFixed(0);
-  return { code, symbol: cfg.symbol, value: Number(rounded), text: `${rounded}${cfg.symbol}` };
+  return { code, symbol, value: Number(rounded), text: `${rounded}${symbol}` };
 }
 
 // ================== STATE ==================
@@ -415,6 +473,14 @@ function ensureCurrencyUI(){
 
 // ================== INIT ==================
 document.addEventListener("DOMContentLoaded", () => {
+    // ✅ تحميل/تحديث أسعار الصرف مرة يوميًا
+  refreshFxRatesIfNeeded().then(() => {
+    // بعد التحميل، حدّث العرض (منتجات + سلة)
+    const db = computeBadges(loadProductsDB());
+    applyFilters(db);
+    updateCartUI();
+  });
+
   // Load DB
   let db = loadProductsDB();
   db = computeBadges(db);
