@@ -32,13 +32,22 @@ const PRODUCTS = [
 ];
 
 // توليد الكروت
-function renderProducts(){
+function renderProducts(list = PRODUCTS){
   const grid = document.getElementById("productsGrid");
   if(!grid) return;
 
-  grid.innerHTML = PRODUCTS.map(p => `
+  if(list.length === 0){
+    grid.innerHTML = `
+      <div class="card">
+        <h3>لا توجد نتائج</h3>
+        <p class="desc">جرّب كلمة بحث أخرى.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = list.map(p => `
     <div class="card">
-      <img src="${p.image}" alt="${p.name}" class="productImg">
       <span class="tag">${p.category}</span>
       <h3>${p.name}</h3>
       <p>السعر: ${p.price}€</p>
@@ -61,3 +70,21 @@ function renderProducts(){
 }
 
 document.addEventListener("DOMContentLoaded", renderProducts);
+document.addEventListener("DOMContentLoaded", () => {
+  renderProducts(PRODUCTS);
+
+  const input = document.getElementById("searchInput");
+  if(!input) return;
+
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+
+    const filtered = PRODUCTS.filter(p => {
+      const text = `${p.name} ${p.category}`.toLowerCase();
+      return !q || text.includes(q);
+    });
+
+    renderProducts(filtered);
+  });
+});
+
