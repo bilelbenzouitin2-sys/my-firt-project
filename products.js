@@ -69,7 +69,7 @@ function renderProducts(list = PRODUCTS){
   `).join("");
 }
 
-document.addEventListener("DOMContentLoaded", renderProducts);
+
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(PRODUCTS);
 
