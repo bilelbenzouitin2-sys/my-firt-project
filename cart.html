@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>السلة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="nav">
+  <div class="row">
+    <div class="brand">🛒 السلة</div>
+    <div class="links">
+      <a href="new-index.html">الرئيسية</a>
+      <a href="products.html">المنتجات</a>
+      <a href="order.html">إرسال طلب</a>
+      <a href="policy.html">السياسة</a>
+      <button id="themeToggle" class="theme-btn" type="button">🌙</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>سلة المشتريات</h1>
+  <p>اختر الكميات ثم أرسل طلب واحد</p>
+</div>
+
+<div class="container">
+  <div id="cartList"></div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="font-weight:800">المجموع:</div>
+      <div style="font-size:18px"><span id="cartTotal">0€</span></div>
+    </div>
+
+    <div class="actions" style="margin-top:12px">
+      <a class="btn buy" href="order.html">إرسال الطلب</a>
+      <a class="btn chat" href="products.html">إضافة منتجات</a>
+    </div>
+
+    <p class="small" style="margin-top:10px">
+      ملاحظة: السلة محفوظة في نفس المتصفح فقط.
+    </p>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div class="footer">© 2026</div>
+
+<script src="cart.js"></script>
+<script src="app.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>
