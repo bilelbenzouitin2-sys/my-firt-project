@@ -122,4 +122,26 @@ document.addEventListener("click", async (e) => {
     productBox.value = items;
   }
 })();
+// ===== تعبئة order.html من الرابط (منتج مفرد أو سلة كاملة) =====
+(() => {
+  const params = new URLSearchParams(window.location.search);
+
+  const product = params.get("product"); // من صفحة منتج
+  const items = params.get("items");     // من السلة
+  const total = params.get("total");     // من السلة
+
+  const productInput = document.getElementById("product");
+  const notesBox = document.getElementById("notes");
+
+  // لو جاء product فقط
+  if(productInput && product){
+    productInput.value = product;
+  }
+
+  // لو جاء items من السلة نضعه في الملاحظات (أفضل مكان)
+  if(notesBox && items){
+    notesBox.value = items + (total ? `\n\nالمجموع: ${total}€` : "");
+  }
+})();
+
 
