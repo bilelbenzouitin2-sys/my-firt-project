@@ -1,5 +1,5 @@
-// ===== Products Data =====
-const PRODUCTS = [
+// ================== BASE PRODUCTS ==================
+const BASE_PRODUCTS = [
   {
     id: "netflix1",
     name: "Netflix - شهر",
@@ -46,19 +46,23 @@ const PRODUCTS = [
   }
 ];
 
-// ===== Filters State =====
+// ================== STORAGE ==================
+const LS_PRODUCTS = "products_db_v1";   // products with admin edits (full objects)
+const LS_CART = "cart_v1";
+
+// ================== STATE ==================
 let currentFilter = "all";
 
-// ===== Helpers =====
+// ================== HELPERS ==================
 function qs(sel){ return document.querySelector(sel); }
 function qsa(sel){ return [...document.querySelectorAll(sel)]; }
 
 function getCart(){
-  try { return JSON.parse(localStorage.getItem("cart_v1") || "[]"); }
+  try { return JSON.parse(localStorage.getItem(LS_CART) || "[]"); }
   catch(e){ return []; }
 }
 function setCart(arr){
-  localStorage.setItem("cart_v1", JSON.stringify(arr));
+  localStorage.setItem(LS_CART, JSON.stringify(arr));
 }
 
 function calcCart(){
@@ -94,34 +98,50 @@ function updateCartUI(){
   }
 }
 
-function showSkeleton(){
-  const grid = document.getElementById("productsGrid");
-  if(!grid) return;
-  grid.innerHTML = Array.from({length: 6}).map(() => `
-    <div class="skeleton">
-      <div class="skImg"></div>
-      <div class="skBody">
-        <div class="skLine w80"></div>
-        <div class="skLine w60"></div>
-        <div class="skLine w40"></div>
-        <div class="skLine w80"></div>
-      </div>
-    </div>
-  `).join("");
-}
-
 function badgeClass(type){
   if(type === "hot") return "badge badgeHot";
   if(type === "sale") return "badge badgeSale";
   return "badge";
 }
 
-// ===== Render =====
+function uid(){
+  return "p_" + Math.random().toString(16).slice(2,10) + Date.now().toString(16).slice(2);
+}
+
+// ================== PRODUCTS DB ==================
+function loadProductsDB(){
+  try{
+    const v = localStorage.getItem(LS_PRODUCTS);
+    if(!v){
+      localStorage.setItem(LS_PRODUCTS, JSON.stringify(BASE_PRODUCTS));
+      return [...BASE_PRODUCTS];
+    }
+    const arr = JSON.parse(v || "[]");
+    if(!Array.isArray(arr) || arr.length === 0){
+      localStorage.setItem(LS_PRODUCTS, JSON.stringify(BASE_PRODUCTS));
+      return [...BASE_PRODUCTS];
+    }
+    return arr;
+  }catch(e){
+    localStorage.setItem(LS_PRODUCTS, JSON.stringify(BASE_PRODUCTS));
+    return [...BASE_PRODUCTS];
+  }
+}
+function saveProductsDB(list){
+  localStorage.setItem(LS_PRODUCTS, JSON.stringify(list));
+}
+function resetProductsDB(){
+  localStorage.setItem(LS_PRODUCTS, JSON.stringify(BASE_PRODUCTS));
+}
+
+// ================== RENDER PRODUCTS ==================
 function renderProducts(list){
   const grid = document.getElementById("productsGrid");
   if(!grid) return;
 
-  if(!list || list.length === 0){
+  const visible = (list || []).filter(p => !p.hidden);
+
+  if(visible.length === 0){
     grid.innerHTML = `
       <div class="productCard">
         <div class="productBody">
@@ -133,13 +153,12 @@ function renderProducts(list){
     return;
   }
 
-  grid.innerHTML = list.map(p => `
+  grid.innerHTML = visible.map(p => `
     <div class="productCard">
       <img class="productImg" src="${p.image}" alt="${p.name}" loading="lazy">
-
       <div class="productBody">
         <div class="productTop">
-          <span class="${badgeClass(p.badgeType)}">${p.badge || p.category}</span>
+          <span class="${badgeClass(p.badgeType)}">${p.badge || "⭐"}</span>
           <span class="badge">${p.category}</span>
         </div>
 
@@ -147,15 +166,15 @@ function renderProducts(list){
         <p class="productDesc">${p.desc || ""}</p>
 
         <div class="productPriceRow">
-          <div class="priceNow">${p.price}€</div>
-          ${p.oldPrice ? `<div class="priceOld">${p.oldPrice}€</div>` : ``}
+          <div class="priceNow">${Number(p.price || 0)}€</div>
+          ${p.oldPrice ? `<div class="priceOld">${Number(p.oldPrice)}€</div>` : ``}
         </div>
 
         <div class="actionsPro">
           <button class="btn buy full addToCart"
             data-id="${p.id}"
             data-name="${p.name}"
-            data-price="${p.price}">
+            data-price="${Number(p.price || 0)}">
             ➕ أضف للسلة
           </button>
 
@@ -169,12 +188,12 @@ function renderProducts(list){
   `).join("");
 }
 
-// ===== Apply Search + Filter =====
-function applyFilters(){
+// ================== FILTERS ==================
+function applyFilters(db){
   const input = document.getElementById("searchInput");
   const q = (input?.value || "").trim().toLowerCase();
 
-  let list = [...PRODUCTS];
+  let list = [...db];
 
   if(currentFilter !== "all"){
     list = list.filter(p => p.category === currentFilter);
@@ -186,63 +205,257 @@ function applyFilters(){
   renderProducts(list);
 }
 
-// ===== Events =====
+// ================== ADMIN UI ==================
+function openAdmin(){
+  const modal = document.getElementById("adminModal");
+  if(modal) modal.style.display = "flex";
+
+  const login = document.getElementById("adminLogin");
+  const panel = document.getElementById("adminPanel");
+  if(login) login.style.display = "block";
+  if(panel) panel.style.display = "none";
+
+  const pass = document.getElementById("adminPass");
+  if(pass) pass.value = "";
+}
+
+function closeAdmin(){
+  const modal = document.getElementById("adminModal");
+  if(modal) modal.style.display = "none";
+}
+
+function renderAdminList(db){
+  const list = document.getElementById("adminList");
+  if(!list) return;
+
+  list.innerHTML = db.map(p => `
+    <div class="admin-item" data-id="${p.id}">
+      <h4>${p.name}</h4>
+
+      <div class="admin-split">
+        <input class="admin-field a-name" placeholder="الاسم" value="${p.name}">
+        <input class="admin-field a-price" type="number" step="0.01" placeholder="السعر" value="${Number(p.price || 0)}">
+      </div>
+
+      <div class="admin-split" style="margin-top:8px">
+        <input class="admin-field a-old" type="number" step="0.01" placeholder="سعر قديم (اختياري)" value="${p.oldPrice ?? ""}">
+        <input class="admin-field a-cat" placeholder="التصنيف (اشتراك/عملات)" value="${p.category}">
+      </div>
+
+      <input class="admin-field a-img" style="margin-top:8px" placeholder="رابط الصورة" value="${p.image}">
+      <input class="admin-field a-badge" style="margin-top:8px" placeholder="Badge (مثال: 🔥 VIP)" value="${p.badge || ""}">
+      <input class="admin-field a-btype" style="margin-top:8px" placeholder='badgeType (hot/sale/none)' value="${p.badgeType || ""}">
+
+      <textarea class="admin-field a-desc" style="margin-top:8px;min-height:70px" placeholder="الوصف">${p.desc || ""}</textarea>
+
+      <div class="admin-row" style="margin-top:10px;justify-content:space-between;">
+        <label class="small" style="display:flex;gap:8px;align-items:center;">
+          <input class="a-hide" type="checkbox" ${p.hidden ? "checked" : ""}>
+          إخفاء المنتج
+        </label>
+
+        <button class="btn admin-danger a-del" type="button">🗑️ حذف</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function collectAdminEdits(db){
+  const map = new Map(db.map(p => [p.id, {...p}]));
+
+  qsa(".admin-item").forEach(box => {
+    const id = box.dataset.id;
+    const p = map.get(id);
+    if(!p) return;
+
+    p.name = box.querySelector(".a-name")?.value?.trim() || p.name;
+    p.price = Number(box.querySelector(".a-price")?.value || 0);
+
+    const oldVal = box.querySelector(".a-old")?.value;
+    p.oldPrice = oldVal === "" ? null : Number(oldVal);
+
+    p.category = box.querySelector(".a-cat")?.value?.trim() || p.category;
+    p.image = box.querySelector(".a-img")?.value?.trim() || p.image;
+
+    p.badge = box.querySelector(".a-badge")?.value?.trim() || "";
+    p.badgeType = box.querySelector(".a-btype")?.value?.trim() || "";
+
+    p.desc = box.querySelector(".a-desc")?.value || "";
+    p.hidden = !!box.querySelector(".a-hide")?.checked;
+  });
+
+  return [...map.values()];
+}
+
+// ================== INIT ==================
 document.addEventListener("DOMContentLoaded", () => {
-  // إحصائية بسيطة
+  // Fake stats
   const stat = document.getElementById("statOrders");
   if(stat){
     const n = Math.floor(Math.random()*80) + 120;
     stat.textContent = `+${n}`;
   }
 
-  showSkeleton();
-  setTimeout(() => {
-    renderProducts(PRODUCTS);
-  }, 250);
+  // Load DB
+  let db = loadProductsDB();
 
-  // بحث
+  // Render
+  renderProducts(db);
+  updateCartUI();
+
+  // Search
   const input = document.getElementById("searchInput");
   if(input){
-    input.addEventListener("input", applyFilters);
+    input.addEventListener("input", () => {
+      db = loadProductsDB();
+      applyFilters(db);
+    });
   }
 
-  // فلترة Chips
+  // Filter buttons
   const btns = qsa(".filterBtn");
   btns.forEach(btn => {
     btn.addEventListener("click", () => {
       btns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       currentFilter = btn.dataset.filter;
-      applyFilters();
+      db = loadProductsDB();
+      applyFilters(db);
     });
   });
 
-  // إضافة للسلة (Event Delegation)
+  // Add to cart (delegation)
   document.addEventListener("click", (e) => {
-    const b = e.target.closest(".addToCart");
-    if(!b) return;
+    const add = e.target.closest(".addToCart");
+    if(add){
+      const id = add.dataset.id;
+      const name = add.dataset.name;
+      const price = Number(add.dataset.price || 0);
 
-    const id = b.dataset.id;
-    const name = b.dataset.name;
-    const price = Number(b.dataset.price || 0);
+      const cart = getCart();
+      const found = cart.find(x => x.id === id);
+      if(found) found.qty = Number(found.qty || 1) + 1;
+      else cart.push({id, name, price, qty: 1});
 
-    const cart = getCart();
-    const found = cart.find(x => x.id === id);
-    if(found){
-      found.qty = Number(found.qty || 1) + 1;
-    }else{
-      cart.push({id, name, price, qty: 1});
-    }
-    setCart(cart);
+      setCart(cart);
 
-    if(typeof window.showToast === "function"){
-      window.showToast(`✅ تمت إضافة "${name}" للسلة`);
-    }else{
-      alert("تمت الإضافة للسلة");
+      if(typeof window.showToast === "function") window.showToast(`✅ تمت إضافة "${name}" للسلة`);
+      else alert("تمت الإضافة للسلة");
+
+      updateCartUI();
+      return;
     }
 
-    updateCartUI();
+    // Admin delete
+    const del = e.target.closest(".a-del");
+    if(del){
+      const item = del.closest(".admin-item");
+      const id = item?.dataset?.id;
+      if(!id) return;
+
+      const ok = confirm("هل تريد حذف هذا المنتج؟");
+      if(!ok) return;
+
+      const cur = loadProductsDB().filter(p => p.id !== id);
+      saveProductsDB(cur);
+      renderAdminList(cur);
+      applyFilters(cur);
+      return;
+    }
   });
 
-  updateCartUI();
+  // Reset all (local)
+  const resetAll = document.getElementById("resetAll");
+  if(resetAll){
+    resetAll.addEventListener("click", () => {
+      const ok = confirm("إعادة ضبط المنتجات للافتراضي في هذا المتصفح؟");
+      if(!ok) return;
+      resetProductsDB();
+      db = loadProductsDB();
+      applyFilters(db);
+      if(typeof window.showToast === "function") window.showToast("♻️ تم إعادة الضبط");
+    });
+  }
+
+  // Admin modal open/close
+  const adminOpen = document.getElementById("adminOpen");
+  const adminClose = document.getElementById("adminClose");
+  const adminModal = document.getElementById("adminModal");
+
+  if(adminOpen) adminOpen.addEventListener("click", openAdmin);
+  if(adminClose) adminClose.addEventListener("click", closeAdmin);
+  if(adminModal) adminModal.addEventListener("click", (e) => {
+    if(e.target === adminModal) closeAdmin();
+  });
+
+  // Admin login
+  const ADMIN_PASSWORD = "1234"; // غيّرها كما تريد
+
+  const adminEnter = document.getElementById("adminEnter");
+  if(adminEnter){
+    adminEnter.addEventListener("click", () => {
+      const v = (qs("#adminPass")?.value || "").trim();
+      if(v !== ADMIN_PASSWORD){
+        if(typeof window.showToast === "function") window.showToast("❌ كلمة السر غير صحيحة");
+        else alert("كلمة السر غير صحيحة");
+        return;
+      }
+      qs("#adminLogin").style.display = "none";
+      qs("#adminPanel").style.display = "block";
+
+      db = loadProductsDB();
+      renderAdminList(db);
+    });
+  }
+
+  // Admin add product
+  const adminAdd = document.getElementById("adminAdd");
+  if(adminAdd){
+    adminAdd.addEventListener("click", () => {
+      db = loadProductsDB();
+      db.unshift({
+        id: uid(),
+        name: "منتج جديد",
+        price: 0,
+        oldPrice: null,
+        category: "اشتراك",
+        desc: "وصف المنتج…",
+        badge: "🆕 جديد",
+        badgeType: "sale",
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60",
+        hidden: false
+      });
+      saveProductsDB(db);
+      renderAdminList(db);
+      applyFilters(db);
+      if(typeof window.showToast === "function") window.showToast("➕ تمت إضافة منتج جديد");
+    });
+  }
+
+  // Admin save/reset
+  const adminSave = document.getElementById("adminSave");
+  const adminReset = document.getElementById("adminReset");
+
+  if(adminSave){
+    adminSave.addEventListener("click", () => {
+      db = loadProductsDB();
+      const updated = collectAdminEdits(db);
+      saveProductsDB(updated);
+      applyFilters(updated);
+      if(typeof window.showToast === "function") window.showToast("✅ تم حفظ التعديلات");
+      else alert("تم الحفظ");
+    });
+  }
+
+  if(adminReset){
+    adminReset.addEventListener("click", () => {
+      const ok = confirm("إرجاع المنتجات للافتراضي؟");
+      if(!ok) return;
+      resetProductsDB();
+      db = loadProductsDB();
+      renderAdminList(db);
+      applyFilters(db);
+      if(typeof window.showToast === "function") window.showToast("♻️ تم الإرجاع");
+    });
+  }
 });
