@@ -945,3 +945,24 @@ body{
   border:1px solid #ffb3b3;
   color:#b40000;
 }
+/* ===== Currency UI ===== */
+.currencyRow{
+  margin-top: 10px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+}
+.currencyLabel{
+  font-size: 13px;
+  opacity: .8;
+}
+.currencySelect{
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 13px;
+  background: #fff;
+}
