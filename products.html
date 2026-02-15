@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+ <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -8,6 +9,7 @@
 </head>
 <body>
 
+<!-- NAV -->
 <div class="nav">
   <div class="row">
     <div class="brand">🛒 المنتجات</div>
@@ -15,25 +17,19 @@
       <a href="new-index.html">الرئيسية</a>
       <a href="products.html">المنتجات</a>
       <a href="order.html">إرسال طلب</a>
-      <a href="cart.html" id="cartLink">🛒 السلة (<span id="cartCount">0</span>)</a>
+      <a href="cart.html">🛒 السلة (<span id="cartCount">0</span>)</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
-
     </div>
   </div>
 </div>
 
+<!-- HERO -->
 <div class="hero">
   <h1>قائمة المنتجات</h1>
-  <p>اختر المنتج ثم انتقل لإرسال الطلب</p>
-</div>
-  <div class="topBar">
-  <div class="box">
-    <div>✅ طلبات اليوم: <b id="ordersToday">0</b></div>
-    <div style="opacity:.9">آخر تحديث: <span id="lastUpdate">الآن</span></div>
-  </div>
+  <p>اختر المنتج ثم أضفه للسلة أو اطلب مباشرة</p>
 </div>
 
-
+<!-- ضمانات -->
 <div class="container">
   <div class="guarantees">
     <div class="gItem">⚡ تسليم سريع</div>
@@ -43,155 +39,77 @@
   </div>
 </div>
 
-
+<!-- بحث وفلترة -->
 <div class="container">
-<div class="searchBar">
+  <div class="searchBar">
 
-  <div class="filters">
-    <button class="filterBtn active" data-filter="all">الكل</button>
-    <button class="filterBtn" data-filter="اشتراك">اشتراكات</button>
-    <button class="filterBtn" data-filter="عملات">عملات</button>
+    <div class="filters">
+      <button class="filterBtn active" data-filter="all">الكل</button>
+      <button class="filterBtn" data-filter="اشتراك">اشتراكات</button>
+      <button class="filterBtn" data-filter="عملات">عملات</button>
+    </div>
+
+    <input id="searchInput" type="text" placeholder="ابحث عن منتج...">
   </div>
-
-  <input id="searchInput" type="text" placeholder="ابحث عن منتج...">
-</div>
-
 
   <div class="grid" id="productsGrid"></div>
 </div>
 
-
-  <div class="container">
+<!-- آراء العملاء -->
+<div class="container">
   <div class="reviews">
     <h2>⭐ آراء العملاء</h2>
 
     <div class="reviewsGrid">
       <div class="reviewCard">
         <div class="stars">★★★★★</div>
-        <p class="reviewText">خدمة سريعة جدًا وتم التسليم في أقل من 10 دقائق.</p>
-        <div class="reviewMeta">— عميل (WhatsApp)</div>
+        <p>خدمة سريعة جدًا وتم التسليم في أقل من 10 دقائق.</p>
+        <div class="reviewMeta">— عميل</div>
       </div>
 
       <div class="reviewCard">
         <div class="stars">★★★★★</div>
-        <p class="reviewText">تعامل محترم ودعم ممتاز بعد الدفع.</p>
-        <div class="reviewMeta">— عميل (Telegram)</div>
+        <p>تعامل محترم ودعم ممتاز بعد الدفع.</p>
+        <div class="reviewMeta">— عميل</div>
       </div>
 
       <div class="reviewCard">
         <div class="stars">★★★★☆</div>
-        <p class="reviewText">كل شيء واضح وسهل، أنصح به.</p>
+        <p>كل شيء واضح وسهل، أنصح به.</p>
         <div class="reviewMeta">— عميل</div>
       </div>
     </div>
-
-    <p class="reviewsNote">💬 تريد تقييمك يظهر هنا؟ راسلنا بعد الطلب.</p>
   </div>
 </div>
 
-  <div class="footer">© 2026</div>
+<div class="footer">© 2026</div>
 <div id="toast"></div>
-  <!-- زر مخفي (يظهر فقط عند الضغط على Alt + A) -->
+
+<!-- زر الإدارة (يظهر عند Alt + A فقط) -->
 <button id="adminOpen" class="admin-fab" type="button" title="Admin">⚙️</button>
 
 <!-- نافذة الإدارة -->
 <div id="adminModal" class="admin-modal" style="display:none;">
   <div class="admin-card">
+
     <div class="admin-head">
       <div style="font-weight:800;">لوحة الإدارة</div>
       <button id="adminClose" class="btn chat" type="button">إغلاق</button>
     </div>
 
-    <div class="admin-login" id="adminLogin">
-      <p class="small">أدخل كلمة السر لفتح الإدارة</p>
-      <input id="adminPass" class="admin-input" placeholder="كلمة السر" type="password">
-      <button id="adminEnter" class="btn buy" type="button">دخول</button>
-      <p class="small" style="opacity:.8;margin-top:8px;">ملاحظة: هذا ليس نظام حماية قوي (لأنه بدون سيرفر).</p>
-    </div>
-
-    <div id="adminPanel" style="display:none;">
-      <p class="small">غيّر السعر أو أخفِ المنتج، ثم اضغط “حفظ”.</p>
-      <div id="adminList" class="admin-list"></div>
-
-      <div class="admin-actions">
-        <button id="adminSave" class="btn buy" type="button">حفظ التغييرات</button>
-        <button id="adminReset" class="btn chat" type="button">إرجاع الافتراضي</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-  <!-- زر الإدارة (مخفي) -->
-<button id="adminOpen" style="
-position:fixed;
-bottom:20px;
-right:20px;
-display:none;
-z-index:9999;
-padding:10px 14px;
-border-radius:50%;
-background:#111;
-color:white;
-border:none;
-cursor:pointer;
-">
-⚙️
-</button>
-
-<!-- نافذة الإدارة -->
-<div id="adminModal" style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.6);
-justify-content:center;
-align-items:center;
-z-index:9998;
-">
-
-  <div style="
-  background:white;
-  width:95%;
-  max-width:500px;
-  padding:20px;
-  border-radius:15px;
-  max-height:90vh;
-  overflow:auto;
-  position:relative;
-  ">
-
-    <button id="adminClose" style="
-    position:absolute;
-    top:10px;
-    left:10px;
-    border:none;
-    background:none;
-    font-size:20px;
-    cursor:pointer;
-    ">
-    ✖
-    </button>
-
     <!-- تسجيل الدخول -->
     <div id="adminLogin">
-      <h3>🔐 تسجيل دخول الإدارة</h3>
-      <input id="adminPass"
-        type="password"
-        placeholder="كلمة السر"
-        style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-top:10px;">
-      <button id="adminEnter"
-        class="btn buy"
-        style="margin-top:10px;width:100%;">
-        دخول
-      </button>
+      <p class="small">أدخل كلمة السر</p>
+      <input id="adminPass" class="admin-input" type="password" placeholder="كلمة السر">
+      <button id="adminEnter" class="btn buy" type="button">دخول</button>
     </div>
 
     <!-- لوحة التحكم -->
     <div id="adminPanel" style="display:none;">
-      <h3>⚙️ تعديل المنتجات</h3>
+      <p class="small">يمكنك تغيير السعر أو إخفاء المنتج</p>
       <div id="adminList"></div>
 
-      <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+      <div style="margin-top:15px;display:flex;gap:10px;">
         <button id="adminSave" class="btn buy">حفظ</button>
         <button id="adminReset" class="btn chat">إرجاع الافتراضي</button>
       </div>
@@ -200,10 +118,16 @@ z-index:9998;
   </div>
 </div>
 
-  <script src="cart.js"></script>
-  <script src="app.js"></script>
-  <script src="products.js"></script>
+<!-- Scripts -->
+<script src="cart.js"></script>
+<script src="app.js"></script>
+<script src="products.js"></script>
 <script src="theme.js"></script>
 
 </body>
 </html>
+
+
+  
+  
+  
