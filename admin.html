@@ -2,9 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة الإدارة</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -12,82 +12,48 @@
   <div class="row">
     <div class="brand">⚙️ لوحة الإدارة</div>
     <div class="links">
-      <a href="products.html">فتح المتجر</a>
+      <a href="products.html">المنتجات</a>
+      <a href="cart.html">السلة</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
 </div>
 
-<div class="hero">
-  <h1>لوحة التحكم</h1>
-  <p>إضافة/حذف/تعديل/ترتيب + كوبونات خصم</p>
-</div>
+<main class="container">
+  <div class="adminShell card">
+    <div class="adminTop">
+      <div>
+        <h1 class="adminTitle">إدارة المنتجات</h1>
+        <p class="muted">عدّل السعر/الاسم/الوصف/الصورة أو أخفِ المنتج. (بدون سيرفر: محفوظ على نفس المتصفح)</p>
+      </div>
+      <a class="btn chat" href="products.html">⬅ رجوع للمتجر</a>
+    </div>
 
-<div class="container">
-
-  <div class="card" id="loginBox">
-    <span class="tag">🔐 دخول</span>
-    <p class="desc">أدخل كلمة السر لفتح الإدارة</p>
-    <input id="adminPass" class="admin-input" type="password" placeholder="كلمة السر">
-    <div class="actions" style="margin-top:12px">
+    <div id="adminLoginBox" class="adminLoginBox">
+      <h3>🔐 تسجيل الدخول</h3>
+      <p class="muted small">كلمة السر بسيطة لأن الموقع بدون سيرفر.</p>
+      <input id="adminPass" class="admin-input" type="password" placeholder="كلمة السر" />
       <button id="adminEnter" class="btn buy" type="button">دخول</button>
-      <a class="btn chat" href="products.html">رجوع</a>
-    </div>
-    <p class="small" style="opacity:.75;margin-top:10px">بدون سيرفر = حماية بسيطة.</p>
-  </div>
-
-  <div id="panelBox" style="display:none;">
-
-    <div class="card">
-      <div class="adminTabs">
-        <button class="adminTab active" data-tab="productsTab" type="button">📦 المنتجات</button>
-        <button class="adminTab" data-tab="couponsTab" type="button">🎟️ الكوبونات</button>
-      </div>
+      <div class="muted small" style="margin-top:10px">تلميح: يمكنك تغيير كلمة السر داخل <b>admin.js</b></div>
     </div>
 
-    <!-- PRODUCTS TAB -->
-    <div class="card" id="productsTab">
-      <div class="admin-toolbar">
-        <button class="btn buy" id="addNew" type="button">➕ إضافة منتج</button>
-        <button class="btn chat" id="exportJson" type="button">⬇️ تصدير JSON</button>
-        <button class="btn chat" id="importJson" type="button">⬆️ استيراد JSON</button>
-        <button class="btn chat" id="resetProducts" type="button">♻️ افتراضي</button>
+    <div id="adminPanel" style="display:none;">
+      <div class="adminActionsRow">
+        <button id="adminSave" class="btn buy" type="button">💾 حفظ</button>
+        <button id="adminReset" class="btn chat" type="button">♻️ رجوع افتراضي</button>
+        <button id="adminLogout" class="btn ghost" type="button">تسجيل خروج</button>
       </div>
-
-      <p class="small" style="margin-top:10px;opacity:.8">
-        ✅ لترتيب المنتجات: اسحب المنتج (Drag) وأفلته (Drop).
-      </p>
 
       <div id="adminList" class="admin-list"></div>
-
-      <div class="admin-actions">
-        <button class="btn buy" id="saveProducts" type="button">💾 حفظ المنتجات</button>
-        <a class="btn chat" href="products.html">فتح المتجر</a>
-      </div>
-
-      <textarea id="jsonBox" class="admin-json" placeholder="JSON هنا"></textarea>
     </div>
-
-    <!-- COUPONS TAB -->
-    <div class="card" id="couponsTab" style="display:none;">
-      <div class="admin-toolbar">
-        <button class="btn buy" id="addCoupon" type="button">➕ إضافة كوبون</button>
-        <button class="btn chat" id="resetCoupons" type="button">♻️ افتراضي</button>
-      </div>
-
-      <div id="couponList" class="admin-list" style="margin-top:12px;"></div>
-
-      <div class="admin-actions">
-        <button class="btn buy" id="saveCoupons" type="button">💾 حفظ الكوبونات</button>
-      </div>
-    </div>
-
   </div>
-</div>
+</main>
 
-<div class="footer">© 2026</div>
 <div id="toast"></div>
+<footer class="footer">© 2026</footer>
 
+<script src="app.js"></script>
+<script src="products.js"></script>
 <script src="admin.js"></script>
 <script src="theme.js"></script>
 </body>
