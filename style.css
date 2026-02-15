@@ -185,6 +185,25 @@ body{
 #cartLink:hover{
   background: rgba(255,255,255,0.25);
 }
+.trustBadges{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.badge{
+  background: rgba(255,255,255,0.7);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:13px;
+  border:1px solid rgba(0,0,0,0.06);
+}
+html[data-theme="dark"] .badge{
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #f4f6ff;
+}
+
 
 
 
