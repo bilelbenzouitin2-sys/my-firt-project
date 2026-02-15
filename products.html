@@ -1,55 +1,88 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>المنتجات</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المتجر — المنتجات</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- NAV -->
 <div class="nav">
   <div class="row">
-    <div class="brand">🛍️ المتجر</div>
+    <div class="brand">🛍️ متجري</div>
     <div class="links">
       <a href="new-index.html">الرئيسية</a>
-      <a class="active" href="products.html">المنتجات</a>
-      <a href="cart.html" id="cartLink">🛒 السلة <span class="pill" id="cartCount">0</span></a>
-      <a href="admin.html" class="ghost">لوحة الإدارة</a>
+      <a href="products.html" class="activeLink">المنتجات</a>
+      <a href="cart.html" id="cartLink">🛒 السلة (<span id="cartCount">0</span>)</a>
+      <a href="policy.html">السياسة</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
 </div>
 
-<header class="hero hero--small">
+<!-- HERO -->
+<section class="heroPro">
   <div class="heroInner">
-    <h1>قائمة المنتجات</h1>
-    <p>اختر منتجك، أضف للسلة، ثم أرسل طلب واحد بسهولة.</p>
+    <div class="heroText">
+      <div class="heroBadge">✅ موثوق • تسليم سريع • دعم مباشر</div>
+      <h1>متجر اشتراكات وعملات — تجربة احترافية</h1>
+      <p>اختر المنتج، أضفه للسلة، ثم أرسل طلبًا واحدًا بسهولة.</p>
 
-    <div class="searchBar">
-      <div class="filters">
-        <button class="filterBtn active" data-filter="all">الكل</button>
-        <button class="filterBtn" data-filter="اشتراك">اشتراكات</button>
-        <button class="filterBtn" data-filter="عملات">عملات</button>
+      <div class="heroStats">
+        <div class="stat"><div class="statNum" id="statOrders">+120</div><div class="statLbl">طلبات</div></div>
+        <div class="stat"><div class="statNum">TRC20</div><div class="statLbl">USDT</div></div>
+        <div class="stat"><div class="statNum">10–60</div><div class="statLbl">دقيقة تسليم</div></div>
+      </div>
+    </div>
+
+    <div class="heroCard">
+      <div class="heroCardTop">
+        <div class="miniTag">🔥 عروض اليوم</div>
+        <div class="miniNote">قم بالبحث أو الفلترة</div>
       </div>
 
-      <input id="searchInput" type="text" placeholder="ابحث: Netflix / Spotify / VIP ..." />
-    </div>
+      <div class="searchBarPro">
+        <input id="searchInput" type="text" placeholder="ابحث عن منتج… (Netflix / VIP / Spotify)">
+      </div>
 
-    <div class="guarantees">
-      <div class="gItem">⚡ تسليم سريع</div>
-      <div class="gItem">🔒 دفع آمن</div>
-      <div class="gItem">💬 دعم مباشر</div>
-      <div class="gItem">✅ تحقق قبل التسليم</div>
+      <div class="filtersPro">
+        <button class="chip filterBtn active" data-filter="all">الكل</button>
+        <button class="chip filterBtn" data-filter="اشتراك">اشتراكات</button>
+        <button class="chip filterBtn" data-filter="عملات">عملات</button>
+      </div>
     </div>
   </div>
-</header>
+</section>
 
-<main class="container">
-  <div class="grid" id="productsGrid"></div>
+<!-- GUARANTEES -->
+<div class="container">
+  <div class="guaranteesPro">
+    <div class="gItemPro">⚡ تسليم سريع</div>
+    <div class="gItemPro">🔒 دفع آمن</div>
+    <div class="gItemPro">💬 دعم مباشر</div>
+    <div class="gItemPro">✅ تحقق قبل التسليم</div>
+  </div>
+</div>
 
-  <section class="reviews">
-    <h2>⭐ آراء العملاء</h2>
+<!-- PRODUCTS -->
+<div class="container">
+  <div class="sectionHead">
+    <h2>المنتجات</h2>
+    <p>كل المنتجات تظهر ديناميكيًا من ملف <b>products.js</b></p>
+  </div>
+
+  <div class="gridPro" id="productsGrid"></div>
+</div>
+
+<!-- REVIEWS -->
+<div class="container">
+  <div class="reviewsPro">
+    <div class="sectionHead">
+      <h2>⭐ آراء العملاء</h2>
+      <p>هذه أمثلة، ويمكنك تغييرها لاحقًا</p>
+    </div>
 
     <div class="reviewsGrid">
       <div class="reviewCard">
@@ -57,26 +90,32 @@
         <p class="reviewText">خدمة سريعة جدًا وتم التسليم في أقل من 10 دقائق.</p>
         <div class="reviewMeta">— عميل (WhatsApp)</div>
       </div>
-
       <div class="reviewCard">
         <div class="stars">★★★★★</div>
         <p class="reviewText">تعامل محترم ودعم ممتاز بعد الدفع.</p>
         <div class="reviewMeta">— عميل (Telegram)</div>
       </div>
-
       <div class="reviewCard">
         <div class="stars">★★★★☆</div>
         <p class="reviewText">كل شيء واضح وسهل، أنصح به.</p>
         <div class="reviewMeta">— عميل</div>
       </div>
     </div>
+  </div>
+</div>
 
-    <p class="reviewsNote">💬 تريد تقييمك يظهر هنا؟ راسلنا بعد الطلب.</p>
-  </section>
-</main>
+<!-- STICKY CART BAR -->
+<div class="stickyCartBar" id="stickyCartBar" style="display:none;">
+  <div class="stickyInner">
+    <div class="stickyInfo">
+      🛒 لديك <b id="stickyCount">0</b> منتجات في السلة — المجموع: <b id="stickyTotal">0€</b>
+    </div>
+    <a class="btn buy" href="cart.html">فتح السلة</a>
+  </div>
+</div>
 
 <div id="toast"></div>
-<footer class="footer">© 2026</footer>
+<div class="footer">© 2026</div>
 
 <script src="cart.js"></script>
 <script src="app.js"></script>
