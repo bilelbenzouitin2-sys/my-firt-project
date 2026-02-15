@@ -1,58 +1,77 @@
-const PRODUCTS = [
-  { id: "netflix1", name: "Netflix - شهر", price: 10, category: "اشتراك" },
-  { id: "spotify1", name: "Spotify - 3 أشهر", price: 8, category: "اشتراك" },
-  { id: "coins1000", name: "حزمة عملات 1000", price: 5, category: "عملات" },
-  { id: "vip5000", name: "حزمة VIP 5000", price: 18, category: "عملات" }
+// ====== تخزين المنتجات ======
+const LS_PRODUCTS = "store_products_v2";
+
+// افتراضي (يتزرع أول مرة فقط)
+const DEFAULT_PRODUCTS = [
+  { id:"netflix1", name:"Netflix - شهر", price:10, category:"اشتراك", image:"https://via.placeholder.com/800x480?text=Netflix", hidden:false },
+  { id:"spotify1", name:"Spotify - 3 أشهر", price:8, category:"اشتراك", image:"https://via.placeholder.com/800x480?text=Spotify", hidden:false },
+  { id:"coins1000", name:"حزمة عملات 1000", price:5, category:"عملات", image:"https://via.placeholder.com/800x480?text=Coins", hidden:false },
+  { id:"vip5000", name:"حزمة VIP 5000", price:18, category:"عملات", image:"https://via.placeholder.com/800x480?text=VIP", hidden:false },
 ];
 
-const LS_KEY = "admin_data";
-
-function loadAdmin(){
-  return JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+function seedProductsIfEmpty(){
+  const raw = localStorage.getItem(LS_PRODUCTS);
+  if(!raw){
+    localStorage.setItem(LS_PRODUCTS, JSON.stringify(DEFAULT_PRODUCTS));
+  }
 }
 
-function saveAdmin(data){
-  localStorage.setItem(LS_KEY, JSON.stringify(data));
+function loadProducts(){
+  try{
+    const data = JSON.parse(localStorage.getItem(LS_PRODUCTS) || "[]");
+    if(!Array.isArray(data) || data.length === 0) return DEFAULT_PRODUCTS;
+    return data;
+  }catch(e){
+    return DEFAULT_PRODUCTS;
+  }
 }
 
-function resetAdmin(){
-  localStorage.removeItem(LS_KEY);
+function getVisibleProducts(){
+  return loadProducts().filter(p => !p.hidden);
 }
 
-function getProducts(){
-  const admin = loadAdmin();
-  return PRODUCTS.map(p=>{
-    if(admin[p.id]){
-      return {...p, ...admin[p.id]};
-    }
-    return p;
-  }).filter(p=>!p.hidden);
+function escapeHtml(str){
+  return String(str||"")
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 
-function renderProducts(list = getProducts()){
+// ====== عرض المنتجات ======
+function renderProducts(list){
   const grid = document.getElementById("productsGrid");
   if(!grid) return;
 
-  if(list.length === 0){
-    grid.innerHTML = `<div class="card"><h3>لا توجد نتائج</h3></div>`;
+  if(!list || list.length === 0){
+    grid.innerHTML = `
+      <div class="card">
+        <h3>لا توجد نتائج</h3>
+        <p class="desc">جرّب كلمة بحث أخرى.</p>
+      </div>
+    `;
     return;
   }
 
-  grid.innerHTML = list.map(p=>`
+  grid.innerHTML = list.map(p => `
     <div class="card">
-      <span class="tag">${p.category}</span>
-      <h3>${p.name}</h3>
-      <p>السعر: ${p.price}€</p>
+      <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" class="productImg">
+      <span class="tag">${escapeHtml(p.category)}</span>
+      <h3>${escapeHtml(p.name)}</h3>
+      <p class="price">السعر: ${Number(p.price).toFixed(2).replace(".00","")}€</p>
+
       <div class="actions">
         <button class="btn buy addToCart"
-          data-id="${p.id}"
-          data-name="${p.name}"
-          data-price="${p.price}">
+          data-id="${escapeHtml(p.id)}"
+          data-name="${escapeHtml(p.name)}"
+          data-price="${Number(p.price)}">
           أضف للسلة
         </button>
-        <a class="btn chat"
-           href="order.html?product=${encodeURIComponent(p.name)}">
-           طلب الآن
+
+        <a class="btn chat" href="product.html?id=${encodeURIComponent(p.id)}">
+          صفحة المنتج
+        </a>
+
+        <a class="btn chat" href="cart.html">
+          فتح السلة
         </a>
       </div>
     </div>
@@ -60,102 +79,39 @@ function renderProducts(list = getProducts()){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  seedProductsIfEmpty();
 
-  renderProducts();
-
-  const input = document.getElementById("searchInput");
-  const buttons = document.querySelectorAll(".filterBtn");
   let currentFilter = "all";
+  const input = document.getElementById("searchInput");
+  const filterButtons = document.querySelectorAll(".filterBtn");
 
   function applyFilters(){
-    const q = input.value.trim().toLowerCase();
-    const list = getProducts().filter(p=>{
-      const matchesSearch = !q || p.name.toLowerCase().includes(q);
-      const matchesCat = currentFilter === "all" || p.category === currentFilter;
-      return matchesSearch && matchesCat;
+    const q = (input?.value || "").trim().toLowerCase();
+    const products = getVisibleProducts();
+
+    const filtered = products.filter(p => {
+      const text = `${p.name} ${p.category}`.toLowerCase();
+      const matchesSearch = !q || text.includes(q);
+      const matchesCategory = currentFilter === "all" || p.category === currentFilter;
+      return matchesSearch && matchesCategory;
     });
-    renderProducts(list);
+
+    renderProducts(filtered);
   }
 
-  input.addEventListener("input", applyFilters);
+  applyFilters();
 
-  buttons.forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      buttons.forEach(b=>b.classList.remove("active"));
+  if(input) input.addEventListener("input", applyFilters);
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       currentFilter = btn.dataset.filter;
       applyFilters();
     });
   });
 
-  // ===== Admin =====
-  const adminOpen = document.getElementById("adminOpen");
-  const adminModal = document.getElementById("adminModal");
-  const adminClose = document.getElementById("adminClose");
-  const adminLogin = document.getElementById("adminLogin");
-  const adminPanel = document.getElementById("adminPanel");
-  const adminPass = document.getElementById("adminPass");
-  const adminEnter = document.getElementById("adminEnter");
-  const adminList = document.getElementById("adminList");
-  const adminSave = document.getElementById("adminSave");
-  const adminReset = document.getElementById("adminReset");
-
-  document.addEventListener("keydown", (e)=>{
-    if(e.altKey && (e.key==="a" || e.key==="A")){
-      adminOpen.style.display = "inline-block";
-    }
-  });
-
-  adminOpen.onclick = ()=> adminModal.style.display="flex";
-  adminClose.onclick = ()=> adminModal.style.display="none";
-  adminModal.onclick = e=>{ if(e.target===adminModal) adminModal.style.display="none"; };
-
-  const PASSWORD = "1234";
-
-  adminEnter.onclick = ()=>{
-    if(adminPass.value !== PASSWORD){
-      alert("كلمة السر خطأ");
-      return;
-    }
-    adminLogin.style.display="none";
-    adminPanel.style.display="block";
-    renderAdmin();
-  };
-
-  function renderAdmin(){
-    const admin = loadAdmin();
-    adminList.innerHTML = PRODUCTS.map(p=>{
-      const data = admin[p.id] || {};
-      return `
-        <div style="margin-bottom:15px;">
-          <strong>${p.name}</strong><br>
-          <input data-id="${p.id}" class="priceInput" type="number" value="${data.price || p.price}">
-          <label>
-            <input type="checkbox" data-id="${p.id}" class="hideInput" ${data.hidden ? "checked":""}>
-            إخفاء
-          </label>
-        </div>
-      `;
-    }).join("");
-  }
-
-  adminSave.onclick = ()=>{
-    const newData = {};
-    document.querySelectorAll(".priceInput").forEach(input=>{
-      const id = input.dataset.id;
-      const price = Number(input.value);
-      const hidden = document.querySelector(`.hideInput[data-id="${id}"]`).checked;
-      newData[id] = {price, hidden};
-    });
-    saveAdmin(newData);
-    renderProducts();
-    alert("تم الحفظ");
-  };
-
-  adminReset.onclick = ()=>{
-    resetAdmin();
-    renderProducts();
-    renderAdmin();
-  };
-
+  // تحديث تلقائي عند الرجوع من admin.html
+  window.addEventListener("focus", applyFilters);
 });
