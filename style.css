@@ -333,6 +333,39 @@ html[data-theme="light"] #searchInput{
 html[data-theme="light"] #searchInput::placeholder{
   color: rgba(0,0,0,0.55);
 }
+.filters{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+.filterBtn{
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  color:white;
+  cursor:pointer;
+  font-size:13px;
+  transition: .2s ease;
+}
+
+.filterBtn:hover{
+  background: rgba(255,255,255,0.25);
+}
+
+.filterBtn.active{
+  background: #00c6ff;
+  border-color:#00c6ff;
+  color:white;
+}
+
+html[data-theme="light"] .filterBtn{
+  background: rgba(0,0,0,0.05);
+  color:#111;
+}
+
 
 
 
