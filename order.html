@@ -70,7 +70,8 @@
 
     <div style="margin-top:10px;">
       <label>ملاحظات</label><br>
-      <textarea style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="أي تفاصيل..."></textarea>
+      <textarea id="notes" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="أي تفاصيل..."></textarea>
+
     </div>
 
     <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
@@ -91,14 +92,7 @@
 
 <div class="footer">© 2026</div>
 
-<script>
-  // جلب اسم المنتج من الرابط: order.html?product=...
-  const params = new URLSearchParams(window.location.search);
-  const product = params.get("product");
-  if(product){
-    document.getElementById("product").value = product;
-  }
-</script>
+
   <div id="toast"></div>
   <script src="app.js"></script>
 <script src="theme.js"></script>
