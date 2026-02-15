@@ -103,3 +103,23 @@ document.addEventListener("click", async (e) => {
   const product = params.get("product");
   if(product) productInput.value = product;
 })();
+// ===== تعبئة الطلب من السلة داخل order.html =====
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const items = params.get("items");
+  const total = params.get("total");
+
+  // غيّر IDs حسب حقول order.html عندك
+  const msgBox = document.getElementById("message") || document.getElementById("notes");
+  const productBox = document.getElementById("product");
+
+  if(items && msgBox){
+    msgBox.value = items + (total ? `\n\nالمجموع: ${total}€` : "");
+  }
+
+  // إذا عندك خانة product وخانة message فقط:
+  if(items && !msgBox && productBox){
+    productBox.value = items;
+  }
+})();
+
