@@ -207,6 +207,31 @@ document.addEventListener("input", (e) => {
     saveCustomer();
   }
 });
+// ===== نسخ عنوان USDT =====
+document.addEventListener("click", function(e){
+  const btn = e.target.closest("#copyUSDT");
+  if(!btn) return;
+
+  const input = document.getElementById("usdtAddress");
+  if(!input) return;
+
+  navigator.clipboard.writeText(input.value).then(() => {
+    btn.textContent = "تم النسخ ✓";
+    btn.style.background = "#4CAF50";
+    btn.style.color = "white";
+
+    if(typeof window.showToast === "function"){
+      window.showToast("✅ تم نسخ عنوان USDT");
+    }
+
+    setTimeout(() => {
+      btn.textContent = "نسخ العنوان";
+      btn.style.background = "";
+      btn.style.color = "";
+    }, 2000);
+  });
+});
+
 
 
 
