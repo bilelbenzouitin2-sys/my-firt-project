@@ -229,6 +229,61 @@ html[data-theme="dark"] .badge{
   background: rgba(0, 255, 170, 0.18);
   border-color: rgba(0, 255, 170, 0.25);
 }
+/* ===== Reviews Section ===== */
+.reviews{
+  margin-top: 20px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 18px;
+  padding: 16px;
+  color: white;
+  backdrop-filter: blur(12px);
+}
+
+.reviews h2{
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.reviewsGrid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.reviewCard{
+  background: rgba(255,255,255,0.92);
+  border-radius: 16px;
+  padding: 14px;
+  color: #111;
+  box-shadow: 0 18px 45px rgba(0,0,0,.18);
+}
+
+.stars{
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.reviewText{
+  margin: 0 0 10px;
+  color: #444;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.reviewMeta{
+  font-size: 12px;
+  color: #777;
+}
+
+.reviewsNote{
+  margin: 12px 0 0;
+  font-size: 13px;
+  opacity: .95;
+}
+
 
 
 
