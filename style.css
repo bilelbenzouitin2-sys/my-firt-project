@@ -306,6 +306,34 @@ html[data-theme="dark"] .badge{
   height:160px;
   object-fit:cover;
 }
+.searchBar{
+  margin: 12px 0 16px;
+  display:flex;
+  justify-content:center;
+}
+#searchInput{
+  width:100%;
+  max-width: 520px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+  outline: none;
+  background: rgba(255,255,255,0.16);
+  color: white;
+  backdrop-filter: blur(12px);
+}
+#searchInput::placeholder{
+  color: rgba(255,255,255,0.85);
+}
+html[data-theme="light"] #searchInput{
+  background: rgba(255,255,255,0.85);
+  color: #111;
+  border-color: rgba(0,0,0,0.12);
+}
+html[data-theme="light"] #searchInput::placeholder{
+  color: rgba(0,0,0,0.55);
+}
+
 
 
 
