@@ -4,25 +4,30 @@ const PRODUCTS = [
     id: "netflix1",
     name: "Netflix - شهر",
     price: 10,
-    category: "اشتراك"
+    category: "اشتراك",
+    image: "https://via.placeholder.com/300x180?text=Netflix"
+
   },
   {
     id: "spotify1",
     name: "Spotify - 3 أشهر",
     price: 8,
-    category: "اشتراك"
+    category: "اشتراك",
+    image: "https://via.placeholder.com/300x180?text=Spotify"
   },
   {
     id: "coins1000",
     name: "حزمة عملات 1000",
     price: 5,
-    category: "عملات"
+    category: "عملات",
+    image: "https://via.placeholder.com/300x180?text=Coins"
   },
   {
     id: "vip5000",
     name: "حزمة VIP 5000",
     price: 18,
-    category: "عملات"
+    category: "عملات",
+    image: "https://via.placeholder.com/300x180?text=VIP"
   }
 ];
 
@@ -33,6 +38,7 @@ function renderProducts(){
 
   grid.innerHTML = PRODUCTS.map(p => `
     <div class="card">
+      <img src="${p.image}" alt="${p.name}" class="productImg">
       <span class="tag">${p.category}</span>
       <h3>${p.name}</h3>
       <p>السعر: ${p.price}€</p>
