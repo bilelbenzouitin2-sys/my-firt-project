@@ -143,5 +143,39 @@ document.addEventListener("click", async (e) => {
     notesBox.value = items + (total ? `\n\nالمجموع: ${total}€` : "");
   }
 })();
+// ===== إرسال السلة إلى Google Form =====
+document.addEventListener("click", function(e){
+  const btn = e.target.closest("#sendForm");
+  if(!btn) return;
+
+  e.preventDefault();
+
+  // جلب السلة
+  const cart = JSON.parse(localStorage.getItem("cart_items") || "[]");
+
+  if(cart.length === 0){
+    alert("السلة فارغة");
+    return;
+  }
+
+  // تجهيز النص
+  const lines = cart.map((it, i) => {
+    const total = (Number(it.price) * it.qty).toFixed(2);
+    return `${i+1}) ${it.name} × ${it.qty} = ${total}€`;
+  });
+
+  const totalPrice = cart.reduce((s,it)=> s + Number(it.price)*it.qty, 0).toFixed(2);
+
+  const productText = cart.map(it => it.name).join(", ");
+  const notesText = "تفاصيل الطلب:\n" + lines.join("\n") + "\n\nالمجموع: " + totalPrice + "€";
+
+  // رابط Google Form الحقيقي
+  const formURL = `https://docs.google.com/forms/d/e/1FAIpQLSexYxFzEsMCORrb6tH5v5jz1RhkT_n7j8iKV6nvRc7JShKdhw/viewform?usp=pp_url`
+    + `&entry.138503007=${encodeURIComponent(productText)}`
+    + `&entry.1501585959=${encodeURIComponent(notesText)}`;
+
+  window.open(formURL, "_blank");
+});
+
 
 
