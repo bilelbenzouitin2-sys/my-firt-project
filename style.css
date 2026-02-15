@@ -365,6 +365,99 @@ html[data-theme="light"] .filterBtn{
   background: rgba(0,0,0,0.05);
   color:#111;
 }
+/* ===== Admin Mode ===== */
+.admin-fab{
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 9998;
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.20);
+  color: white;
+  display: none; /* يظهر فقط مع Alt + A */
+  backdrop-filter: blur(10px);
+}
+
+.admin-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+}
+
+.admin-card{
+  width: min(900px, 100%);
+  background: rgba(255,255,255,0.96);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.22);
+}
+
+.admin-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.admin-input{
+  width:100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin: 8px 0;
+}
+
+.admin-list{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.admin-item{
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+}
+
+.admin-item h4{
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.admin-row{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.admin-row input{
+  flex:1;
+  min-width: 120px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.admin-actions{
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+  margin-top: 12px;
+}
+
 
 
 
