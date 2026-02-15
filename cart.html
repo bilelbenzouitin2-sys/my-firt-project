@@ -12,10 +12,8 @@
   <div class="row">
     <div class="brand">🛒 السلة</div>
     <div class="links">
-      <a href="new-index.html">الرئيسية</a>
       <a href="products.html">المنتجات</a>
-      <a href="order.html">إرسال طلب</a>
-      <a href="policy.html">السياسة</a>
+      <a href="admin.html">الإدارة</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
@@ -23,128 +21,53 @@
 
 <div class="hero">
   <h1>سلة المشتريات</h1>
-  <p>اختر الكميات ثم أرسل طلب واحد</p>
-</div>
-
-<div class="steps">
-  <div class="step done">1) السلة</div>
-  <div class="step done">2) الدفع</div>
-  <div class="step done">3) البيانات</div>
-  <div class="step">4) الإرسال</div>
+  <p>اختر الكميات ثم طبّق كوبون الخصم</p>
 </div>
 
 <div class="container">
-
   <div id="cartList"></div>
 
-  <!-- الدفع -->
   <div class="card" style="margin-top:12px">
-    <span class="tag">💳 الدفع</span>
-
-    <p><strong>ادفع عبر USDT (شبكة TRC20 فقط)</strong></p>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
-      <input id="usdtAddress"
-        type="text"
-        value="TScdoMeKTV83cfGhHrmQ2oLroeEX4xSjTQ"
-        readonly
-        style="flex:1;padding:10px;border-radius:10px;border:1px solid #ccc;font-size:13px;">
-
-      <button class="btn chat" id="copyUSDT" type="button">
-        نسخ العنوان
-      </button>
+    <span class="tag">🎟️ كوبون خصم</span>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center;">
+      <input id="couponInput" class="admin-input" placeholder="مثال: SAVE10" style="flex:1;min-width:180px;">
+      <button id="applyCoupon" class="btn buy" type="button">تطبيق</button>
+      <button id="clearCoupon" class="btn chat" type="button">إلغاء</button>
     </div>
-
-    <p style="margin-top:8px;font-size:13px;color:#777;">
-      ⚠️ تأكد من اختيار شبكة TRC20 داخل Binance.
-    </p>
-   <div class="trustBadges">
-  <div class="badge">🔒 دفع آمن</div>
-  <div class="badge">⚡ تسليم سريع</div>
-  <div class="badge">💬 دعم مباشر</div>
-  <div class="badge">✅ تحقق قبل التسليم</div>
+    <p class="small" id="couponMsg" style="margin-top:10px;opacity:.8"></p>
   </div>
-    </div>
 
-  
-
-  <!-- بيانات الزبون -->
   <div class="card" style="margin-top:12px">
-    <span class="tag">🧾 بيانات الزبون</span>
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+      <div>
+        <div class="small">المجموع قبل الخصم</div>
+        <div style="font-weight:800" id="subTotal">0€</div>
+      </div>
 
-    <div style="margin-top:10px;">
-      <label>الاسم الكامل</label><br>
-      <input id="custName" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: Bilel">
-    </div>
+      <div>
+        <div class="small">الخصم</div>
+        <div style="font-weight:800" id="discount">0€</div>
+      </div>
 
-    <div style="margin-top:10px;">
-      <label>رقم واتساب أو تلغرام</label><br>
-      <input id="custContact" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="مثال: 216... أو @username">
-    </div>
-
-    <div style="margin-top:10px;">
-      <label>معرف الحساب / ID (اختياري)</label><br>
-      <input id="custId" style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;" placeholder="ID أو Email">
+      <div>
+        <div class="small">المجموع النهائي</div>
+        <div style="font-size:18px;font-weight:900" id="total">0€</div>
+      </div>
     </div>
 
     <div class="actions" style="margin-top:12px">
-      <button class="btn buy" id="sendFormCart" type="button">إرسال الطلب للنموذج الرسمي</button>
+      <a class="btn buy" href="order.html">إرسال الطلب</a>
       <a class="btn chat" href="products.html">إضافة منتجات</a>
     </div>
 
-    <p class="small" style="margin-top:10px">
-      سيتم إرسال محتوى السلة تلقائيًا إلى Google Form.
-    </p>
-  </div>
-
-  <!-- المجموع -->
-  <div class="card" style="margin-top:12px">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-      <div style="font-weight:800">المجموع:</div>
-      <div style="font-size:18px"><span id="cartTotal">0€</span></div>
-    </div>
-
-    <p class="small" style="margin-top:10px">
-      ملاحظة: السلة محفوظة في نفس المتصفح فقط.
-    </p>
+    <p class="small" style="margin-top:10px;opacity:.8">السلة محفوظة في نفس المتصفح.</p>
   </div>
 </div>
 
-
-  
 <div id="toast"></div>
-  <div class="container">
-  <div class="reviews">
-    <h2>⭐ آراء العملاء</h2>
-
-    <div class="reviewsGrid">
-      <div class="reviewCard">
-        <div class="stars">★★★★★</div>
-        <p class="reviewText">الدفع كان سهل وتم تجهيز الطلب بسرعة.</p>
-        <div class="reviewMeta">— عميل</div>
-      </div>
-
-      <div class="reviewCard">
-        <div class="stars">★★★★★</div>
-        <p class="reviewText">مصداقية عالية + رد سريع.</p>
-        <div class="reviewMeta">— عميل</div>
-      </div>
-
-      <div class="reviewCard">
-        <div class="stars">★★★★☆</div>
-        <p class="reviewText">تجربة ممتازة وسأعيد الشراء.</p>
-        <div class="reviewMeta">— عميل</div>
-      </div>
-    </div>
-
-    <p class="reviewsNote">✅ التسليم بعد التأكد من وصول الدفع داخل Binance.</p>
-  </div>
-</div>
-
 <div class="footer">© 2026</div>
 
 <script src="cart.js"></script>
-<script src="app.js"></script>
 <script src="theme.js"></script>
 </body>
 </html>
