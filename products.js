@@ -1,3 +1,5 @@
+alert("products.js اشتغل ✅");
+
 // قائمة المنتجات
 const PRODUCTS = [
   {
