@@ -13,6 +13,7 @@ function addItem(item){
   saveCart(cart);
 }
 
+// عرض السلة في cart.html
 function renderCart(){
   const list = document.getElementById("cartList");
   const totalEl = document.getElementById("cartTotal");
@@ -22,6 +23,17 @@ function renderCart(){
   list.innerHTML = "";
 
   let total = 0;
+
+  if(cart.length === 0){
+    list.innerHTML = `
+      <div class="card">
+        <p class="desc">سلتك فارغة الآن. ارجع للمنتجات واضغط "أضف للسلة".</p>
+      </div>
+    `;
+    totalEl.textContent = "0€";
+    return;
+  }
+
   cart.forEach((it, idx) => {
     total += (Number(it.price) * it.qty);
 
@@ -47,8 +59,9 @@ function renderCart(){
   totalEl.textContent = total.toFixed(2) + "€";
 }
 
+// أحداث
 document.addEventListener("click", (e) => {
-  // إضافة للسلة من أي صفحة
+  // إضافة للسلة
   const addBtn = e.target.closest(".addToCart");
   if(addBtn){
     addItem({
@@ -56,11 +69,15 @@ document.addEventListener("click", (e) => {
       name: addBtn.dataset.name,
       price: Number(addBtn.dataset.price)
     });
-    if(typeof showToast === "function") showToast("🛒 تمت الإضافة للسلة");
+
+    // toast إن وجد
+    if(typeof window.showToast === "function"){
+      window.showToast("🛒 تمت الإضافة للسلة");
+    }
     return;
   }
 
-  // أزرار السلة داخل cart.html
+  // أزرار التحكم داخل السلة
   const actBtn = e.target.closest("[data-act]");
   if(!actBtn) return;
 
