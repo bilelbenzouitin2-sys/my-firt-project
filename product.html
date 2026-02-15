@@ -1,35 +1,152 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>صفحة المنتج</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="nav">
   <div class="row">
-    <div class="brand">📦 المنتج</div>
+    <div class="brand">🧾 صفحة المنتج</div>
     <div class="links">
-      <a href="products.html">رجوع للمنتجات</a>
-      <a href="cart.html">🛒 السلة (<span id="cartCount">0</span>)</a>
+      <a href="new-index.html">الرئيسية</a>
+      <a href="products.html">المنتجات</a>
+      <a href="cart.html" id="cartLink">🛒 السلة <span class="pill" id="cartCount">0</span></a>
+      <a href="admin.html" class="ghost">لوحة الإدارة</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
 </div>
 
-<div class="container">
-  <div class="card productPage" id="productBox">
-    <h3>جاري التحميل...</h3>
-  </div>
-</div>
+<main class="container">
+  <div id="productWrap"></div>
+</main>
 
-<div class="footer">© 2026</div>
 <div id="toast"></div>
+<footer class="footer">© 2026</footer>
 
 <script src="cart.js"></script>
-<script src="product.js"></script>
+<script src="app.js"></script>
+<script src="products.js"></script>
 <script src="theme.js"></script>
+
+<script>
+  // نعتمد نفس overrides من products.js
+  const OV_KEY = "admin_overrides_v2";
+
+  function loadOverrides(){
+    try { return JSON.parse(localStorage.getItem(OV_KEY) || "{}"); }
+    catch { return {}; }
+  }
+
+  function getProductById(id){
+    const ov = loadOverrides();
+    const base = (typeof PRODUCTS !== "undefined") ? PRODUCTS : [];
+    const p = base.find(x => x.id === id);
+    if(!p) return null;
+    const o = ov[id] || {};
+    if(o.hidden) return null;
+
+    return {
+      ...p,
+      name: (o.name ?? p.name),
+      desc: (o.desc ?? p.desc),
+      image: (o.image ?? p.image),
+      category: (o.category ?? p.category),
+      price: (o.price !== undefined) ? Number(o.price) : Number(p.price),
+    };
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function render(p){
+    const wrap = document.getElementById("productWrap");
+    if(!wrap) return;
+
+    if(!p){
+      wrap.innerHTML = `
+        <div class="card emptyCard">
+          <h2>المنتج غير موجود</h2>
+          <p class="muted">قد يكون تم إخفاؤه من لوحة الإدارة أو الرابط غير صحيح.</p>
+          <a class="btn buy" href="products.html">رجوع للمنتجات</a>
+        </div>
+      `;
+      return;
+    }
+
+    wrap.innerHTML = `
+      <section class="productPage">
+        <div class="productGallery card">
+          <img class="productHeroImg" src="${p.image}" alt="${escapeHTML(p.name)}" />
+        </div>
+
+        <div class="productInfo card">
+          <span class="tag">${escapeHTML(p.category)}</span>
+          <h1 class="productH1">${escapeHTML(p.name)}</h1>
+          <p class="productLongDesc">${escapeHTML(p.desc)}</p>
+
+          <div class="priceLine">
+            <div>
+              <div class="muted small">السعر</div>
+              <div class="productBigPrice">${p.price}€</div>
+            </div>
+            <div class="badges">
+              <span class="badge">⚡ سريع</span>
+              <span class="badge">🔒 آمن</span>
+              <span class="badge">💬 دعم</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn buy addToCart"
+              data-id="${p.id}"
+              data-name="${escapeHTML(p.name)}"
+              data-price="${p.price}">
+              ➕ أضف للسلة
+            </button>
+
+            <a class="btn ghost" href="cart.html">🛒 الذهاب للسلة</a>
+
+            <a class="btn chat" href="order.html?product=${encodeURIComponent(p.name)}">
+              ⚡ طلب الآن
+            </a>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="miniInfo">
+            <div class="miniBox">
+              <div class="miniTitle">طريقة الدفع</div>
+              <div class="miniText">USDT (TRC20)</div>
+            </div>
+            <div class="miniBox">
+              <div class="miniTitle">التسليم</div>
+              <div class="miniText">بعد التأكيد</div>
+            </div>
+            <div class="miniBox">
+              <div class="miniTitle">الدعم</div>
+              <div class="miniText">واتساب / تلغرام</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <a class="btn chat" href="products.html">⬅ رجوع للمنتجات</a>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+  render(getProductById(id));
+</script>
 </body>
 </html>
