@@ -6,7 +6,6 @@ const PRODUCTS = [
     price: 10,
     category: "اشتراك",
     image: "https://via.placeholder.com/300x180?text=Netflix"
-
   },
   {
     id: "spotify1",
@@ -48,6 +47,8 @@ function renderProducts(list = PRODUCTS){
 
   grid.innerHTML = list.map(p => `
     <div class="card">
+      <img src="${p.image}" alt="${p.name}" class="productImg">
+
       <span class="tag">${p.category}</span>
       <h3>${p.name}</h3>
       <p>السعر: ${p.price}€</p>
@@ -69,7 +70,6 @@ function renderProducts(list = PRODUCTS){
   `).join("");
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(PRODUCTS);
 
@@ -87,4 +87,3 @@ document.addEventListener("DOMContentLoaded", () => {
     renderProducts(filtered);
   });
 });
-
