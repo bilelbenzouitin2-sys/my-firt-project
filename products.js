@@ -71,19 +71,45 @@ function renderProducts(list = PRODUCTS){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
   renderProducts(PRODUCTS);
 
-  const input = document.getElementById("searchInput");
-  if(!input) return;
+  let currentFilter = "all";
 
-  input.addEventListener("input", () => {
+  const input = document.getElementById("searchInput");
+  const filterButtons = document.querySelectorAll(".filterBtn");
+
+  function applyFilters(){
+
     const q = input.value.trim().toLowerCase();
 
     const filtered = PRODUCTS.filter(p => {
-      const text = `${p.name} ${p.category}`.toLowerCase();
-      return !q || text.includes(q);
+
+      const matchesSearch =
+        !q || `${p.name} ${p.category}`.toLowerCase().includes(q);
+
+      const matchesCategory =
+        currentFilter === "all" || p.category === currentFilter;
+
+      return matchesSearch && matchesCategory;
     });
 
     renderProducts(filtered);
+  }
+
+  if(input){
+    input.addEventListener("input", applyFilters);
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+
+      filterButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      currentFilter = btn.dataset.filter;
+      applyFilters();
+    });
   });
+
 });
