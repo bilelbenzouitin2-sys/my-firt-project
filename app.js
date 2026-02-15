@@ -176,6 +176,27 @@ document.addEventListener("click", function(e){
 
   window.open(formURL, "_blank");
 });
+// ===== عدّاد السلة في الشريط العلوي =====
+function getCartItems(){
+  try { return JSON.parse(localStorage.getItem("cart_items") || "[]"); }
+  catch(e){ return []; }
+}
+function updateCartCount(){
+  const el = document.getElementById("cartCount");
+  if(!el) return;
+  const cart = getCartItems();
+  const count = cart.reduce((s,it)=> s + (it.qty || 1), 0);
+  el.textContent = count;
+}
+window.addEventListener("DOMContentLoaded", updateCartCount);
+document.addEventListener("click", (e) => {
+  if(e.target.closest(".addToCart")){
+    // تأخير بسيط حتى يتم الحفظ
+    setTimeout(updateCartCount, 50);
+  }
+});
+
+
 
 
 
