@@ -10,12 +10,33 @@ function setCart(arr){
   localStorage.setItem(LS_CART, JSON.stringify(arr));
 }
 
+// تحويل البيانات القديمة (price) إلى الجديدة (priceEUR) تلقائياً
+function normalizeCart(){
+  const cart = getCart();
+
+  let changed = false;
+
+  cart.forEach(item => {
+    if(item.priceEUR === undefined && item.price !== undefined){
+      item.priceEUR = Number(item.price);
+      changed = true;
+    }
+    if(item.qty === undefined) {
+      item.qty = 1;
+      changed = true;
+    }
+  });
+
+  if(changed) setCart(cart);
+  return cart;
+}
+
 function renderCart(){
   const list = document.getElementById("cartList");
   const totalEl = document.getElementById("cartTotal");
   if(!list || !totalEl) return;
 
-  const cart = getCart();
+  const cart = normalizeCart();
 
   if(cart.length === 0){
     list.innerHTML = `
@@ -31,7 +52,7 @@ function renderCart(){
   let total = 0;
 
   list.innerHTML = cart.map((item, index) => {
-    const price = Number(item.priceEUR ?? item.price ?? 0); // دعم قديم/جديد
+    const price = Number(item.priceEUR ?? item.price ?? 0);
     const qty = Number(item.qty || 1);
     const subtotal = price * qty;
     total += subtotal;
@@ -41,15 +62,17 @@ function renderCart(){
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
           <div>
             <strong>${item.name || "منتج"}</strong>
-            <div style="margin-top:5px;font-size:13px;opacity:.8;">
+            <div style="margin-top:5px;font-size:13px;opacity:.85;">
               السعر: ${price}€ × ${qty} = <b>${subtotal}€</b>
             </div>
           </div>
 
-          <div style="display:flex;gap:6px;align-items:center;">
-            <button onclick="changeQty(${index}, -1)" class="btn chat" type="button">-</button>
-            <button onclick="changeQty(${index}, 1)" class="btn chat" type="button">+</button>
-            <button onclick="removeItem(${index})" class="btn chat" type="button">حذف</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button type="button" onclick="changeQty(${index}, -1)" class="btn chat">-</button>
+            <button type="button" onclick="changeQty(${index}, 1)" class="btn chat">+</button>
+            <button type="button" onclick="removeItem(${index})" class="btn chat" style="border:1px solid #f3b0b0;color:#b00020;background:#fff;">
+              حذف
+            </button>
           </div>
         </div>
       </div>
@@ -79,9 +102,5 @@ function removeItem(index){
   setCart(cart);
   renderCart();
 }
-
-// مهم: لأن عندك onclick داخل HTML
-window.changeQty = changeQty;
-window.removeItem = removeItem;
 
 document.addEventListener("DOMContentLoaded", renderCart);
