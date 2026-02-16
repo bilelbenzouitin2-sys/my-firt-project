@@ -1,5 +1,4 @@
 // ================= CART PAGE =================
-
 const LS_CART = "cart_v1";
 
 function getCart(){
@@ -14,7 +13,6 @@ function setCart(arr){
 function renderCart(){
   const list = document.getElementById("cartList");
   const totalEl = document.getElementById("cartTotal");
-
   if(!list || !totalEl) return;
 
   const cart = getCart();
@@ -33,25 +31,25 @@ function renderCart(){
   let total = 0;
 
   list.innerHTML = cart.map((item, index) => {
-    const price = Number(item.priceEUR || 0);
+    const price = Number(item.priceEUR ?? item.price ?? 0); // دعم قديم/جديد
     const qty = Number(item.qty || 1);
     const subtotal = price * qty;
     total += subtotal;
 
     return `
       <div class="card" style="margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
           <div>
-            <strong>${item.name}</strong>
+            <strong>${item.name || "منتج"}</strong>
             <div style="margin-top:5px;font-size:13px;opacity:.8;">
-              السعر: ${price}€ × ${qty}
+              السعر: ${price}€ × ${qty} = <b>${subtotal}€</b>
             </div>
           </div>
 
-          <div style="display:flex;gap:6px;">
-            <button onclick="changeQty(${index}, -1)" class="btn chat">-</button>
-            <button onclick="changeQty(${index}, 1)" class="btn chat">+</button>
-            <button onclick="removeItem(${index})" class="btn admin-danger">حذف</button>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button onclick="changeQty(${index}, -1)" class="btn chat" type="button">-</button>
+            <button onclick="changeQty(${index}, 1)" class="btn chat" type="button">+</button>
+            <button onclick="removeItem(${index})" class="btn chat" type="button">حذف</button>
           </div>
         </div>
       </div>
@@ -81,5 +79,9 @@ function removeItem(index){
   setCart(cart);
   renderCart();
 }
+
+// مهم: لأن عندك onclick داخل HTML
+window.changeQty = changeQty;
+window.removeItem = removeItem;
 
 document.addEventListener("DOMContentLoaded", renderCart);
