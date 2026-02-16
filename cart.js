@@ -1,6 +1,8 @@
-// ================= CART PAGE =================
+// ================= STORAGE KEYS =================
 const LS_CART = "cart_v1";
+const LS_COUPON = "cart_coupon_v1";
 
+// ================= CART CORE =================
 function getCart(){
   try { return JSON.parse(localStorage.getItem(LS_CART) || "[]"); }
   catch(e){ return []; }
@@ -10,33 +12,29 @@ function setCart(arr){
   localStorage.setItem(LS_CART, JSON.stringify(arr));
 }
 
-// تحويل البيانات القديمة (price) إلى الجديدة (priceEUR) تلقائياً
-function normalizeCart(){
-  const cart = getCart();
-
-  let changed = false;
-
-  cart.forEach(item => {
-    if(item.priceEUR === undefined && item.price !== undefined){
-      item.priceEUR = Number(item.price);
-      changed = true;
-    }
-    if(item.qty === undefined) {
-      item.qty = 1;
-      changed = true;
-    }
-  });
-
-  if(changed) setCart(cart);
-  return cart;
+function saveCoupon(code){
+  localStorage.setItem(LS_COUPON, code);
 }
 
-function renderCart(){
-  const list = document.getElementById("cartList");
-  const totalEl = document.getElementById("cartTotal");
-  if(!list || !totalEl) return;
+function getCoupon(){
+  return localStorage.getItem(LS_COUPON) || "";
+}
 
-  const cart = normalizeCart();
+function clearCouponStorage(){
+  localStorage.removeItem(LS_COUPON);
+}
+
+// ================= RENDER CART =================
+function renderCart(){
+
+  const list = document.getElementById("cartList");
+  const subTotalEl = document.getElementById("subTotal");
+  const discountEl = document.getElementById("discount");
+  const totalEl = document.getElementById("total");
+
+  if(!list || !subTotalEl || !discountEl || !totalEl) return;
+
+  const cart = getCart();
 
   if(cart.length === 0){
     list.innerHTML = `
@@ -45,43 +43,58 @@ function renderCart(){
         <p>أضف منتجات أولاً من صفحة المنتجات.</p>
       </div>
     `;
+    subTotalEl.textContent = "0€";
+    discountEl.textContent = "0€";
     totalEl.textContent = "0€";
     return;
   }
 
-  let total = 0;
+  let subTotal = 0;
 
   list.innerHTML = cart.map((item, index) => {
-    const price = Number(item.priceEUR ?? item.price ?? 0);
+
+    const price = Number(item.price || item.priceEUR || 0);
     const qty = Number(item.qty || 1);
     const subtotal = price * qty;
-    total += subtotal;
+
+    subTotal += subtotal;
 
     return `
       <div class="card" style="margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
           <div>
-            <strong>${item.name || "منتج"}</strong>
-            <div style="margin-top:5px;font-size:13px;opacity:.85;">
-              السعر: ${price}€ × ${qty} = <b>${subtotal}€</b>
+            <strong>${item.name}</strong>
+            <div style="margin-top:5px;font-size:13px;opacity:.8;">
+              السعر: ${price}€ × ${qty}
             </div>
           </div>
 
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button type="button" onclick="changeQty(${index}, -1)" class="btn chat">-</button>
-            <button type="button" onclick="changeQty(${index}, 1)" class="btn chat">+</button>
-            <button type="button" onclick="removeItem(${index})" class="btn chat" style="border:1px solid #f3b0b0;color:#b00020;background:#fff;">
-              حذف
-            </button>
+          <div style="display:flex;gap:6px;">
+            <button onclick="changeQty(${index}, -1)" class="btn chat">-</button>
+            <button onclick="changeQty(${index}, 1)" class="btn chat">+</button>
+            <button onclick="removeItem(${index})" class="btn admin-danger">حذف</button>
           </div>
         </div>
       </div>
     `;
   }).join("");
 
-  totalEl.textContent = total + "€";
+  // ================= COUPON =================
+  let discount = 0;
+  const coupon = getCoupon();
+
+  if(coupon === "SAVE10"){
+    discount = subTotal * 0.10;
+  }
+
+  const finalTotal = subTotal - discount;
+
+  subTotalEl.textContent = subTotal.toFixed(2) + "€";
+  discountEl.textContent = discount.toFixed(2) + "€";
+  totalEl.textContent = finalTotal.toFixed(2) + "€";
 }
 
+// ================= CHANGE QTY =================
 function changeQty(index, delta){
   const cart = getCart();
   if(!cart[index]) return;
@@ -96,6 +109,7 @@ function changeQty(index, delta){
   renderCart();
 }
 
+// ================= REMOVE =================
 function removeItem(index){
   const cart = getCart();
   cart.splice(index, 1);
@@ -103,4 +117,36 @@ function removeItem(index){
   renderCart();
 }
 
-document.addEventListener("DOMContentLoaded", renderCart);
+// ================= COUPON EVENTS =================
+document.addEventListener("DOMContentLoaded", () => {
+
+  renderCart();
+
+  const applyBtn = document.getElementById("applyCoupon");
+  const clearBtn = document.getElementById("clearCoupon");
+  const input = document.getElementById("couponInput");
+  const msg = document.getElementById("couponMsg");
+
+  if(applyBtn){
+    applyBtn.addEventListener("click", () => {
+      const code = input.value.trim().toUpperCase();
+
+      if(code === "SAVE10"){
+        saveCoupon(code);
+        msg.textContent = "✅ تم تطبيق خصم 10%";
+      } else {
+        msg.textContent = "❌ الكوبون غير صالح";
+      }
+
+      renderCart();
+    });
+  }
+
+  if(clearBtn){
+    clearBtn.addEventListener("click", () => {
+      clearCouponStorage();
+      msg.textContent = "تم إلغاء الكوبون";
+      renderCart();
+    });
+  }
+});
