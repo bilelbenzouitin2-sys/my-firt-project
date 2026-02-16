@@ -96,6 +96,44 @@ function renderProducts(){
 
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts();
+  document.addEventListener("click", function(e){
+
+  if(e.target.classList.contains("addToCart")){
+
+    const id = e.target.dataset.id;
+    const name = e.target.dataset.name;
+    const priceEUR = Number(e.target.dataset.price);
+
+    const LS_CART = "cart_v1";
+
+    let cart = [];
+
+    try {
+      cart = JSON.parse(localStorage.getItem(LS_CART)) || [];
+    } catch(e){
+      cart = [];
+    }
+
+    const existing = cart.find(item => item.id === id);
+
+    if(existing){
+      existing.qty += 1;
+    } else {
+      cart.push({
+        id,
+        name,
+        priceEUR,
+        qty: 1
+      });
+    }
+
+    localStorage.setItem(LS_CART, JSON.stringify(cart));
+
+    alert("✅ تم إضافة المنتج للسلة");
+  }
+
+});
+
   updateCartCount();
 
   // Event Delegation: يشتغل حتى لو المنتجات ديناميكية
