@@ -32,12 +32,13 @@ function renderProducts(){
       <p>السعر: ${p.priceEUR}€</p>
 
       <div class="actions">
-        <button class="btn buy addToCart"
-          data-id="${p.id}"
-          data-name="${p.name}"
-          data-price="${p.priceEUR}">
-          أضف للسلة
-        </button>
+<button onclick='addToCart(${JSON.stringify({
+  id: p.id,
+  name: p.name,
+  price: p.priceEUR
+})})' class="btn buy">
+  أضف للسلة
+</button>
       </div>
     </div>
   `).join("");
