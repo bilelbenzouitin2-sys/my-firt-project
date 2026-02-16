@@ -3,125 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>المتجر — المنتجات</title>
+  <title>المنتجات</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- NAV -->
 <div class="nav">
   <div class="row">
-    <div class="brand">🛍️ متجري</div>
+    <div class="brand">🛒 المنتجات</div>
     <div class="links">
       <a href="new-index.html">الرئيسية</a>
-      <a href="products.html" class="activeLink">المنتجات</a>
+      <a href="products.html">المنتجات</a>
       <a href="cart.html" id="cartLink">🛒 السلة (<span id="cartCount">0</span>)</a>
-      <a href="policy.html">السياسة</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
 </div>
 
-<!-- HERO -->
-<section class="heroPro">
-  <div class="heroInner">
-    <div class="heroText">
-      <div class="heroBadge">✨ متجر حديث • سريع • أنيق</div>
-      <h1>قائمة المنتجات</h1>
-      <p>بحث + فلترة + سلة + لوحة إدارة احترافية (بدون سيرفر).</p>
+<div class="hero">
+  <h1>قائمة المنتجات</h1>
+  <p>ابحث + فلتر + أضف للسلة</p>
+</div>
 
-      <div class="heroStats">
-        <div class="stat"><div class="statNum" id="statOrders">+120</div><div class="statLbl">طلبات</div></div>
-        <div class="stat"><div class="statNum">TRC20</div><div class="statLbl">USDT</div></div>
-        <div class="stat"><div class="statNum">24/7</div><div class="statLbl">دعم</div></div>
-      </div>
-
-      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button id="adminOpen" class="btn chat" type="button">⚙️ لوحة الإدارة</button>
-        <button id="resetAll" class="btn chat" type="button">♻️ إعادة ضبط (محلي)</button>
-      </div>
-      <p class="small" style="opacity:.85;margin-top:8px">
-        ملاحظة: التعديلات تُحفظ في نفس المتصفح (localStorage).
-      </p>
-    </div>
-
-    <div class="heroCard">
-      <div class="heroCardTop">
-        <div class="miniTag">🔎 بحث وفلترة</div>
-        <div class="miniNote">اختر قسمًا أو ابحث</div>
-      </div>
-
-      <div class="searchBarPro">
-        <input id="searchInput" type="text" placeholder="ابحث عن منتج… (Netflix / VIP / Spotify)">
-      </div>
-
-      <div class="filtersPro">
-        <button class="chip filterBtn active" data-filter="all">الكل</button>
-        <button class="chip filterBtn" data-filter="اشتراك">اشتراكات</button>
-        <button class="chip filterBtn" data-filter="عملات">عملات</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRODUCTS -->
 <div class="container">
-  <div class="sectionHead">
-    <h2>المنتجات</h2>
-    <p>العرض ديناميكي + قابل للتعديل من لوحة الإدارة</p>
+  <div class="guarantees">
+    <div class="gItem">⚡ تسليم سريع</div>
+    <div class="gItem">🔒 دفع آمن</div>
+    <div class="gItem">💬 دعم مباشر</div>
+    <div class="gItem">✅ ضمان قبل التسليم</div>
   </div>
-
-  <div class="gridPro" id="productsGrid"></div>
 </div>
 
-<!-- STICKY CART -->
-<div class="stickyCartBar" id="stickyCartBar" style="display:none;">
-  <div class="stickyInner">
-    <div class="stickyInfo">
-      🛒 لديك <b id="stickyCount">0</b> منتجات — المجموع: <b id="stickyTotal">0€</b>
+<div class="container">
+  <div class="searchBar">
+    <div class="filters">
+      <button class="filterBtn active" data-filter="all">الكل</button>
+      <button class="filterBtn" data-filter="اشتراك">اشتراكات</button>
+      <button class="filterBtn" data-filter="عملات">عملات</button>
     </div>
-    <a class="btn buy" href="cart.html">فتح السلة</a>
+    <input id="searchInput" type="text" placeholder="ابحث عن منتج...">
   </div>
+
+  <div class="grid" id="productsGrid"></div>
 </div>
 
-<!-- ADMIN MODAL -->
+<div class="footer">© 2026</div>
+<div id="toast"></div>
+
+<!-- زر الإدارة (مخفي) -->
+<button id="adminOpen" class="admin-fab" type="button" title="Admin" style="display:none;">⚙️</button>
+
+<!-- نافذة الإدارة -->
 <div id="adminModal" class="admin-modal" style="display:none;">
   <div class="admin-card">
     <div class="admin-head">
-      <div style="font-weight:900;">⚙️ لوحة الإدارة</div>
+      <div style="font-weight:800;">لوحة الإدارة</div>
       <button id="adminClose" class="btn chat" type="button">إغلاق</button>
     </div>
 
-    <!-- Login -->
-    <div id="adminLogin" class="admin-login">
-      <p class="small">أدخل كلمة السر لفتح الإدارة</p>
+    <div class="admin-login" id="adminLogin">
+      <p class="small">أدخل كلمة السر</p>
       <input id="adminPass" class="admin-input" placeholder="كلمة السر" type="password">
       <button id="adminEnter" class="btn buy" type="button">دخول</button>
-      <p class="small" style="opacity:.75;margin-top:8px;">تنبيه: حماية بسيطة لأن الموقع بدون سيرفر.</p>
+      <p class="small" style="opacity:.8;margin-top:8px;">(بدون سيرفر = حماية بسيطة)</p>
     </div>
 
-    <!-- Panel -->
     <div id="adminPanel" style="display:none;">
-      <div class="admin-toolbar">
-        <div class="admin-title">إدارة المنتجات</div>
-        <button id="adminAdd" class="btn buy" type="button">➕ إضافة منتج</button>
-      </div>
-
-      <div class="admin-list" id="adminList"></div>
+      <p class="small">غيّر السعر أو أخفِ المنتج ثم اضغط حفظ.</p>
+      <div id="adminList" class="admin-list"></div>
 
       <div class="admin-actions">
-        <button id="adminSave" class="btn buy" type="button">💾 حفظ</button>
-        <button id="adminReset" class="btn chat" type="button">♻️ افتراضي</button>
+        <button id="adminSave" class="btn buy" type="button">حفظ</button>
+        <button id="adminReset" class="btn chat" type="button">إرجاع الافتراضي</button>
       </div>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
-<div class="footer">© 2026</div>
-
 <script src="cart.js"></script>
-<script src="app.js"></script>
 <script src="products.js"></script>
 <script src="theme.js"></script>
 </body>
