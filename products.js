@@ -1,4 +1,4 @@
-// ================== BASE PRODUCTS (with multi-currency) ==================
+// ================== BASE PRODUCTS (Multi-currency base EUR) ==================
 const BASE_PRODUCTS = [
   {
     id: "netflix1",
@@ -38,16 +38,14 @@ const BASE_PRODUCTS = [
   }
 ];
 
-// ================== STORAGE ==================
-const LS_PRODUCTS = "products_db_v2";   // upgraded db
+// ================== STORAGE KEYS ==================
+const LS_PRODUCTS = "products_db_v2";
 const LS_CART = "cart_v1";
 const LS_SALES = "sales_counter_v1";
 const LS_CURRENCY = "currency_pref_v1";
-// ================== CURRENCY (AUTO RATES) ==================
-const LS_CURRENCY = "currency_pref_v1";
 const FX_CACHE_KEY = "fx_rates_cache_v1";
 
-// العملات التي تريد عرضها
+// ================== CURRENCY (AUTO RATES) ==================
 const CURRENCIES = {
   EUR: { symbol: "€" },
   TND: { symbol: "د.ت" },
@@ -61,7 +59,6 @@ function setCurrency(code){
   localStorage.setItem(LS_CURRENCY, code);
 }
 
-// تحميل الكاش (إن وجد)
 function loadFxCache(){
   try { return JSON.parse(localStorage.getItem(FX_CACHE_KEY) || "null"); }
   catch(e){ return null; }
@@ -70,59 +67,43 @@ function saveFxCache(obj){
   localStorage.setItem(FX_CACHE_KEY, JSON.stringify(obj));
 }
 
-// جلب أسعار الصرف من الإنترنت (Base: EUR)
 async function refreshFxRatesIfNeeded(){
   const cache = loadFxCache();
   const now = Date.now();
   const ONE_DAY = 24 * 60 * 60 * 1000;
 
-  // إذا عندنا كاش جديد (أقل من 24 ساعة) لا نعيد التحميل
   if(cache && cache.timestamp && (now - cache.timestamp) < ONE_DAY && cache.rates){
     return cache;
   }
 
-  // تحميل جديد
   try{
     const res = await fetch("https://open.er-api.com/v6/latest/eur", { cache: "no-store" });
     const data = await res.json();
 
-    // تأكد من نجاح الاستجابة
     if(data && data.result === "success" && data.base_code === "EUR" && data.rates){
-      const obj = {
-        timestamp: now,
-        rates: data.rates
-      };
+      const obj = { timestamp: now, rates: data.rates };
       saveFxCache(obj);
       return obj;
     }
-  }catch(err){
-    // تجاهل
-  }
+  }catch(e){}
 
-  // في حال فشل التحميل: رجع آخر كاش لو موجود
   return cache || { timestamp: now, rates: { EUR: 1 } };
 }
 
-// نحصل على سعر عملة مقابل EUR
 function rateFromEUR(code){
   const cache = loadFxCache();
   if(!cache || !cache.rates) return (code === "EUR" ? 1 : 0);
-
-  // API يعطي rates بحيث: 1 EUR = rates[CODE]
   const r = cache.rates[code];
   if(!r) return (code === "EUR" ? 1 : 0);
   return Number(r);
 }
 
-// تحويل السعر من EUR إلى العملة المختارة وعرضه
 function moneyFromEUR(eur){
   const code = getCurrency();
   const symbol = (CURRENCIES[code]?.symbol || "€");
   const rate = rateFromEUR(code) || 1;
 
   const v = Number(eur || 0) * rate;
-
-  // تنسيق حسب العملة (TND نعطيها رقمين)
   const rounded = (code === "TND") ? v.toFixed(2) : v.toFixed(0);
   return { code, symbol, value: Number(rounded), text: `${rounded}${symbol}` };
 }
@@ -134,6 +115,11 @@ let currentFilter = "all";
 function qs(sel){ return document.querySelector(sel); }
 function qsa(sel){ return [...document.querySelectorAll(sel)]; }
 
+function uid(){
+  return "p_" + Math.random().toString(16).slice(2,10) + Date.now().toString(16).slice(2);
+}
+
+// ================== CART ==================
 function getCart(){
   try { return JSON.parse(localStorage.getItem(LS_CART) || "[]"); }
   catch(e){ return []; }
@@ -148,16 +134,15 @@ function calcCart(){
   let totalEUR = 0;
   cart.forEach(it => {
     const qty = Number(it.qty || 1);
-    const priceEUR = Number(it.priceEUR ?? it.price ?? 0);
+    const priceEUR = Number(it.priceEUR ?? 0);
     count += qty;
     totalEUR += qty * priceEUR;
   });
-  const total = moneyFromEUR(totalEUR);
-  return {count, totalEUR, total};
+  return { count, totalEUR, total: moneyFromEUR(totalEUR) };
 }
 
 function updateCartUI(){
-  const {count, total} = calcCart();
+  const { count, total } = calcCart();
 
   const cartCount = document.getElementById("cartCount");
   if(cartCount) cartCount.textContent = count;
@@ -165,6 +150,7 @@ function updateCartUI(){
   const bar = document.getElementById("stickyCartBar");
   const sCount = document.getElementById("stickyCount");
   const sTotal = document.getElementById("stickyTotal");
+
   if(bar && sCount && sTotal){
     if(count > 0){
       bar.style.display = "block";
@@ -176,11 +162,7 @@ function updateCartUI(){
   }
 }
 
-function uid(){
-  return "p_" + Math.random().toString(16).slice(2,10) + Date.now().toString(16).slice(2);
-}
-
-// ================== SALES (best seller) ==================
+// ================== SALES (BEST SELLER) ==================
 function loadSales(){
   try { return JSON.parse(localStorage.getItem(LS_SALES) || "{}"); }
   catch(e){ return {}; }
@@ -205,9 +187,10 @@ function topSellerId(){
 
 // ================== PRODUCTS DB ==================
 function normalizeProduct(p){
-  // دعم النسخ القديمة: price -> priceEUR
   const priceEUR = (p.priceEUR !== undefined) ? Number(p.priceEUR) : Number(p.price || 0);
-  const oldPriceEUR = (p.oldPriceEUR !== undefined) ? p.oldPriceEUR : (p.oldPrice ?? null);
+  const oldPriceEUR =
+    (p.oldPriceEUR !== undefined) ? p.oldPriceEUR :
+    (p.oldPrice !== undefined) ? p.oldPrice : null;
 
   return {
     id: p.id || uid(),
@@ -242,20 +225,21 @@ function loadProductsDB(){
     return seed;
   }
 }
+
 function saveProductsDB(list){
   localStorage.setItem(LS_PRODUCTS, JSON.stringify(list.map(normalizeProduct)));
 }
+
 function resetProductsDB(){
   const seed = BASE_PRODUCTS.map(normalizeProduct);
   localStorage.setItem(LS_PRODUCTS, JSON.stringify(seed));
 }
 
-// ================== BADGE LOGIC ==================
+// ================== BADGES ==================
 function computeBadges(db){
   const { topId, topVal } = topSellerId();
   const out = db.map(p => ({...p}));
 
-  // تمييز الأعلى مبيعاً (إذا عنده مبيعات)
   if(topId && topVal > 0){
     const idx = out.findIndex(x => x.id === topId);
     if(idx >= 0){
@@ -264,10 +248,8 @@ function computeBadges(db){
     }
   }
 
-  // تمييز المنتجات التي فيها خصم
   out.forEach(p => {
     if(p.oldPriceEUR && Number(p.oldPriceEUR) > Number(p.priceEUR)){
-      // إذا ليس أفضل مبيعًا
       if(p.badge !== "🔥 الأكثر مبيعًا"){
         p.badge = "✅ عرض";
         p.badgeType = "sale";
@@ -284,7 +266,7 @@ function badgeClass(type){
   return "badge";
 }
 
-// ================== RENDER PRODUCTS ==================
+// ================== RENDER ==================
 function renderProducts(list){
   const grid = document.getElementById("productsGrid");
   if(!grid) return;
@@ -353,6 +335,7 @@ function applyFilters(db){
   if(currentFilter !== "all"){
     list = list.filter(p => p.category === currentFilter);
   }
+
   if(q){
     list = list.filter(p => (`${p.name} ${p.category} ${p.desc || ""}`).toLowerCase().includes(q));
   }
@@ -360,16 +343,45 @@ function applyFilters(db){
   renderProducts(list);
 }
 
-// ================== ADMIN UI ==================
+// ================== CURRENCY UI (inject) ==================
+function ensureCurrencyUI(){
+  const heroCard = document.querySelector(".heroCard");
+  if(!heroCard) return;
+  if(document.getElementById("currencySelect")) return;
+
+  const wrap = document.createElement("div");
+  wrap.className = "currencyRow";
+  wrap.innerHTML = `
+    <div class="currencyLabel">العملة:</div>
+    <select id="currencySelect" class="currencySelect">
+      <option value="EUR">EUR (€)</option>
+      <option value="TND">TND (د.ت)</option>
+      <option value="USD">USD ($)</option>
+    </select>
+  `;
+  heroCard.appendChild(wrap);
+
+  const sel = document.getElementById("currencySelect");
+  if(sel){
+    sel.value = getCurrency();
+    sel.addEventListener("change", () => {
+      setCurrency(sel.value);
+      const db = computeBadges(loadProductsDB());
+      applyFilters(db);
+      updateCartUI();
+      if(typeof window.showToast === "function") window.showToast("💱 تم تغيير العملة");
+    });
+  }
+}
+
+// ================== ADMIN (minimal wiring - uses your existing modal HTML) ==================
 function openAdmin(){
   const modal = document.getElementById("adminModal");
   if(modal) modal.style.display = "flex";
-
   const login = document.getElementById("adminLogin");
   const panel = document.getElementById("adminPanel");
   if(login) login.style.display = "block";
   if(panel) panel.style.display = "none";
-
   const pass = document.getElementById("adminPass");
   if(pass) pass.value = "";
 }
@@ -392,7 +404,7 @@ function renderAdminList(db){
       </div>
 
       <div class="admin-split" style="margin-top:8px">
-        <input class="admin-field a-old" type="number" step="0.01" placeholder="سعر قديم EUR (اختياري)" value="${p.oldPriceEUR ?? ""}">
+        <input class="admin-field a-old" type="number" step="0.01" placeholder="سعر قديم EUR" value="${p.oldPriceEUR ?? ""}">
         <input class="admin-field a-cat" placeholder="التصنيف (اشتراك/عملات)" value="${p.category}">
       </div>
 
@@ -438,56 +450,16 @@ function collectAdminEdits(db){
   return [...map.values()];
 }
 
-// ================== CURRENCY UI (inject small selector) ==================
-function ensureCurrencyUI(){
-  // نضيف اختيار العملة داخل heroCard إن لم يوجد
-  const heroCard = document.querySelector(".heroCard");
-  if(!heroCard) return;
-  if(document.getElementById("currencySelect")) return;
-
-  const wrap = document.createElement("div");
-  wrap.className = "currencyRow";
-  wrap.innerHTML = `
-    <div class="currencyLabel">العملة:</div>
-    <select id="currencySelect" class="currencySelect">
-      <option value="EUR">EUR (€)</option>
-      <option value="TND">TND (د.ت)</option>
-      <option value="USD">USD ($)</option>
-    </select>
-  `;
-  heroCard.appendChild(wrap);
-
-  const sel = document.getElementById("currencySelect");
-  if(sel){
-    sel.value = getCurrency();
-    sel.addEventListener("change", () => {
-      setCurrency(sel.value);
-      // إعادة عرض المنتجات بالعملة الجديدة
-      const db = computeBadges(loadProductsDB());
-      applyFilters(db);
-      updateCartUI();
-      if(typeof window.showToast === "function") window.showToast("💱 تم تغيير العملة");
-    });
-  }
-}
-
 // ================== INIT ==================
-document.addEventListener("DOMContentLoaded", () => {
-    // ✅ تحميل/تحديث أسعار الصرف مرة يوميًا
-  refreshFxRatesIfNeeded().then(() => {
-    // بعد التحميل، حدّث العرض (منتجات + سلة)
-    const db = computeBadges(loadProductsDB());
-    applyFilters(db);
-    updateCartUI();
-  });
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1) حمّل أسعار الصرف (حتى لو فشل، يرجع كاش/افتراضي)
+  await refreshFxRatesIfNeeded();
 
-  // Load DB
-  let db = loadProductsDB();
-  db = computeBadges(db);
-
+  // 2) جهّز واجهة اختيار العملة
   ensureCurrencyUI();
 
-  // Render
+  // 3) عرض المنتجات
+  let db = computeBadges(loadProductsDB());
   applyFilters(db);
   updateCartUI();
 
@@ -512,7 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Clicks (Add to cart + Admin delete)
+  // Click delegation (add to cart + admin delete)
   document.addEventListener("click", (e) => {
     const add = e.target.closest(".addToCart");
     if(add){
@@ -520,20 +492,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = add.dataset.name;
       const priceEUR = Number(add.dataset.priceEur || 0);
 
-      // cart item stores EUR base, and we render currency dynamically
       const cart = getCart();
       const found = cart.find(x => x.id === id);
       if(found) found.qty = Number(found.qty || 1) + 1;
       else cart.push({id, name, priceEUR, qty: 1});
       setCart(cart);
 
-      // زيادة عداد المبيعات (محلي)
-      incSale(id);
+      incSale(id); // best seller counter
 
       if(typeof window.showToast === "function") window.showToast(`✅ تمت إضافة "${name}" للسلة`);
       updateCartUI();
 
-      // إعادة عرض المنتجات لتحديث "الأكثر مبيعًا"
       db = computeBadges(loadProductsDB());
       applyFilters(db);
       return;
@@ -544,25 +513,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const item = del.closest(".admin-item");
       const id = item?.dataset?.id;
       if(!id) return;
-
-      const ok = confirm("هل تريد حذف هذا المنتج؟");
-      if(!ok) return;
+      if(!confirm("هل تريد حذف هذا المنتج؟")) return;
 
       const cur = loadProductsDB().filter(p => p.id !== id);
       saveProductsDB(cur);
       renderAdminList(cur);
+
       db = computeBadges(loadProductsDB());
       applyFilters(db);
       return;
     }
   });
 
-  // Reset all products
+  // Reset all products (if button exists)
   const resetAll = document.getElementById("resetAll");
   if(resetAll){
     resetAll.addEventListener("click", () => {
-      const ok = confirm("إعادة ضبط المنتجات للافتراضي في هذا المتصفح؟");
-      if(!ok) return;
+      if(!confirm("إعادة ضبط المنتجات للافتراضي؟")) return;
       resetProductsDB();
       db = computeBadges(loadProductsDB());
       applyFilters(db);
@@ -570,7 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Admin modal open/close
+  // Admin modal wiring (if exists in HTML)
   const adminOpen = document.getElementById("adminOpen");
   const adminClose = document.getElementById("adminClose");
   const adminModal = document.getElementById("adminModal");
@@ -581,9 +548,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if(ev.target === adminModal) closeAdmin();
   });
 
-  // Admin login
-  const ADMIN_PASSWORD = "1234"; // غيّرها كما تريد
+  // Admin login/save/add/reset (if exists)
+  const ADMIN_PASSWORD = "1234";
+
   const adminEnter = document.getElementById("adminEnter");
+  const adminAdd = document.getElementById("adminAdd");
+  const adminSave = document.getElementById("adminSave");
+  const adminReset = document.getElementById("adminReset");
+
   if(adminEnter){
     adminEnter.addEventListener("click", () => {
       const v = (qs("#adminPass")?.value || "").trim();
@@ -600,8 +572,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Admin add product
-  const adminAdd = document.getElementById("adminAdd");
   if(adminAdd){
     adminAdd.addEventListener("click", () => {
       const cur = loadProductsDB();
@@ -617,36 +587,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }));
       saveProductsDB(cur);
       renderAdminList(cur);
+
       db = computeBadges(loadProductsDB());
       applyFilters(db);
+
       if(typeof window.showToast === "function") window.showToast("➕ تمت إضافة منتج جديد");
     });
   }
-
-  // Admin save/reset
-  const adminSave = document.getElementById("adminSave");
-  const adminReset = document.getElementById("adminReset");
 
   if(adminSave){
     adminSave.addEventListener("click", () => {
       const cur = loadProductsDB();
       const updated = collectAdminEdits(cur);
       saveProductsDB(updated);
+
       db = computeBadges(loadProductsDB());
       applyFilters(db);
+
       if(typeof window.showToast === "function") window.showToast("✅ تم حفظ التعديلات");
     });
   }
 
   if(adminReset){
     adminReset.addEventListener("click", () => {
-      const ok = confirm("إرجاع المنتجات للافتراضي؟");
-      if(!ok) return;
+      if(!confirm("إرجاع المنتجات للافتراضي؟")) return;
       resetProductsDB();
       const cur = loadProductsDB();
       renderAdminList(cur);
+
       db = computeBadges(cur);
       applyFilters(db);
+
       if(typeof window.showToast === "function") window.showToast("♻️ تم الإرجاع");
     });
   }
