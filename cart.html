@@ -12,8 +12,9 @@
   <div class="row">
     <div class="brand">🛒 السلة</div>
     <div class="links">
+      <a href="new-index.html">الرئيسية</a>
       <a href="products.html">المنتجات</a>
-      <a href="admin.html">الإدارة</a>
+      <a href="cart.html">السلة</a>
       <button id="themeToggle" class="theme-btn" type="button">🌙</button>
     </div>
   </div>
@@ -21,46 +22,24 @@
 
 <div class="hero">
   <h1>سلة المشتريات</h1>
-  <p>اختر الكميات ثم طبّق كوبون الخصم</p>
+  <p>هنا ستظهر منتجاتك</p>
 </div>
 
 <div class="container">
   <div id="cartList"></div>
 
   <div class="card" style="margin-top:12px">
-    <span class="tag">🎟️ كوبون خصم</span>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center;">
-      <input id="couponInput" class="admin-input" placeholder="مثال: SAVE10" style="flex:1;min-width:180px;">
-      <button id="applyCoupon" class="btn buy" type="button">تطبيق</button>
-      <button id="clearCoupon" class="btn chat" type="button">إلغاء</button>
-    </div>
-    <p class="small" id="couponMsg" style="margin-top:10px;opacity:.8"></p>
-  </div>
-
-  <div class="card" style="margin-top:12px">
-    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-      <div>
-        <div class="small">المجموع قبل الخصم</div>
-        <div style="font-weight:800" id="subTotal">0€</div>
-      </div>
-
-      <div>
-        <div class="small">الخصم</div>
-        <div style="font-weight:800" id="discount">0€</div>
-      </div>
-
-      <div>
-        <div class="small">المجموع النهائي</div>
-        <div style="font-size:18px;font-weight:900" id="total">0€</div>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-weight:800">المجموع:</div>
+      <div style="font-size:18px"><span id="cartTotal">0€</span></div>
     </div>
 
     <div class="actions" style="margin-top:12px">
-      <a class="btn buy" href="order.html">إرسال الطلب</a>
-      <a class="btn chat" href="products.html">إضافة منتجات</a>
+      <a class="btn buy" href="products.html">إضافة منتجات</a>
+      <button class="btn chat" id="clearCart" type="button">تفريغ السلة</button>
     </div>
 
-    <p class="small" style="margin-top:10px;opacity:.8">السلة محفوظة في نفس المتصفح.</p>
+    <p class="small" style="margin-top:10px">السلة محفوظة في نفس المتصفح.</p>
   </div>
 </div>
 
