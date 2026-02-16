@@ -87,18 +87,31 @@ function renderProducts(list){
   }
 
   grid.innerHTML = list.map(p => `
-    <div class="card">
-      <img src="${p.image}" alt="${p.name}" style="width:100%;border-radius:12px;margin-bottom:10px;">
-      <span class="tag">${p.category}</span>
+  <div class="card product-card">
+
+    ${p.badge ? `<div class="badge">${p.badge}</div>` : ""}
+
+    <div class="img-wrapper">
+      <img src="${p.image}" alt="${p.name}">
+    </div>
+
+    <div class="card-body">
       <h3>${p.name}</h3>
-      <p>السعر: ${p.priceEUR}€</p>
+
+      <div class="price">
+        <span class="currency">€</span>
+        <span class="amount">${p.priceEUR}</span>
+      </div>
 
       <div class="actions">
-        <button class="btn buy addToCart" data-id="${p.id}" type="button">أضف للسلة</button>
-        <a class="btn chat" href="cart.html">اذهب للسلة</a>
+        <button class="btn buy addToCart" data-id="${p.id}">
+          🛒 أضف للسلة
+        </button>
       </div>
     </div>
-  `).join("");
+  </div>
+`).join("");
+
 }
 
 // ===== فلاتر + بحث =====
