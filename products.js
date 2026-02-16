@@ -3,14 +3,10 @@ const LS_PRODUCTS = "products_db_v2";
 
 
 const DEFAULT_PRODUCTS = [
-  { id:"netflix1", name:"Netflix - شهر", priceEUR:10, category:"اشتراك", image:"https://via.placeholder.com/400x220?text=Netflix, badge:"🔥 جديد"
-" },
-  { id:"spotify1", name:"Spotify - 3 أشهر", priceEUR:8, category:"اشتراك", image:"https://via.placeholder.com/400x220?text=Spotify, badge:"🔥 جديد"
-" },
-  { id:"coins1000", name:"حزمة عملات 1000", priceEUR:5, category:"عملات", image:"https://via.placeholder.com/400x220?text=Coins, badge:"🔥 جديد"
-" },
-  { id:"vip5000", name:"حزمة VIP 5000", priceEUR:18, category:"عملات", image:"https://via.placeholder.com/400x220?text=VIP, badge:"🔥 جديد"
-" }
+  { id:"netflix1", name:"Netflix - شهر", priceEUR:10, category:"اشتراك", image:"https://via.placeholder.com/400x220?text=Netflix" },
+  { id:"spotify1", name:"Spotify - 3 أشهر", priceEUR:8, category:"اشتراك", image:"https://via.placeholder.com/400x220?text=Spotify" },
+  { id:"coins1000", name:"حزمة عملات 1000", priceEUR:5, category:"عملات", image:"https://via.placeholder.com/400x220?text=Coins" },
+  { id:"vip5000", name:"حزمة VIP 5000", priceEUR:18, category:"عملات", image:"https://via.placeholder.com/400x220?text=VIP" }
 ];
 
 function toast(msg){
