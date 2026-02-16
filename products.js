@@ -1,6 +1,6 @@
 // ================= PRODUCTS DB (NO SERVER) =================
 const LS_PRODUCTS = "products_db_v2";
-const LS_CART = "cart_v1"; // نفس المفتاح في cart.js
+
 
 const DEFAULT_PRODUCTS = [
   { id:"netflix1", name:"Netflix - شهر", priceEUR:10, category:"اشتراك", image:"https://via.placeholder.com/400x220?text=Netflix" },
